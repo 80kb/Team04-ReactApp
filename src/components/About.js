@@ -9,7 +9,11 @@ class About extends Component {
 		super(props);
 
 		this.state = {
-			teamnum: 2,
+			teamnum: 0,
+			sprintnum: 0,
+			productname: 'lol_nope',
+			productdescription: 'you_thought',
+			releasedate: '0/0/0',
 		};
 	}
 
@@ -25,11 +29,17 @@ class About extends Component {
 	// update those values with the values we receive from the api.
 	componentDidMount() {
 		$.ajax({
-			url: 'https://reqres.in/api/users?page=2',		// URL for the api call, just copy from the browser
+			url: 'https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage005/aboutPage',		// URL for the api call, just copy from the browser
 			type: 'GET',						// The type of API call
 			dataType: 'json',
 			success: (data) => {
-				this.setState({ teamnum: data['per_page'] }); 	// Update the state to the data received (if successful)
+				this.setState({
+					teamnum: data['Items.TeamNumber'],
+					sprintnum: data['Items.SprintNumber'],
+					productname: data['Items.ProductName'],
+					productdesciption: data['Items.ProductDescription'],
+					releasedate: data['Items.ReleaseDate'],
+				}); 	// Update the state to the data received (if successful)
 			},
 			error: (xhr, stat, err) => {
 				console.error('Error: ', err);			// Print the error if the api call failed
@@ -48,7 +58,11 @@ class About extends Component {
 			<>
 			<h1>About Us</h1>
 			<ul>
-			<li>{this.state.teamnum}</li>
+			<li>Team {this.state.teamnum}</li>
+			<li>Sprint {this.state.sprintnum}</li>
+			<li>Product Name: {this.state.productname}</li>
+			<li>Product Description: {this.state.productdescription}</li>
+			<li>Release Date: {this.state.releasedate}</li>
 			</ul>
 			</>
 		);
