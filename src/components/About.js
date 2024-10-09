@@ -34,11 +34,11 @@ class About extends Component {
 			dataType: 'json',
 			success: (data) => {
 				this.setState({
-					teamnum: data.Items.TeamNumber,
-					sprintnum: data.Items.SprintNumber,
-					productname: data.Items.ProductName,
-					productdescription: data.Items.ProductDescription,
-					releasedate: data.Items.ReleaseDate,
+					teamnum: data['Items']['TeamNumber'],
+					sprintnum: data['Items']['SprintNumber'],
+					productname: data['Items']['ProductName'],
+					productdescription: data['Items']['ProductDescription'],
+					releasedate: data['Items']['ReleaseDate'],
 				}); 	// Update the state to the data received (if successful)
 			},
 			error: (xhr, stat, err) => {
