@@ -27,12 +27,6 @@ class About extends Component {
 	// as seen in the constructor above. The constructor is only
 	// setting the initial default state values, and this function will
 	// update those values with the values we receive from the api.
-	const itms = "Items";
-	const teamNum = "TeamNumber";
-	const sprintNum = "SprintNumber";
-	const prodName = "ProductName";
-	const prodDesc = "ProductDescription";
-	const relDate = "ReleaseDate";
 	componentDidMount() {
 		$.ajax({
 			url: 'https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage005/aboutPage',		// URL for the api call, just copy from the browser
@@ -40,11 +34,11 @@ class About extends Component {
 			dataType: 'json',
 			success: (data) => {
 				this.setState({
-					teamnum: data[#itms.#teamNum],
-					sprintnum: data['Items.SprintNumber'],
-					productname: data['Items.ProductName'],
-					productdescription: data['Items.ProductDescription'],
-					releasedate: data['Items.ReleaseDate'],
+					teamnum: data.Items.TeamNumber,
+					sprintnum: data.Items.SprintNumber,
+					productname: data.Items.ProductName,
+					productdescription: data.Items.ProductDescription,
+					releasedate: data.Items.ReleaseDate,
 				}); 	// Update the state to the data received (if successful)
 			},
 			error: (xhr, stat, err) => {
