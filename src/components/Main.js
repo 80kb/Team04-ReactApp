@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import About from './About'
+import Catalog from './Catalog'
 
 const Home = () => (
 	<div className='home'>
@@ -10,8 +11,9 @@ const Home = () => (
 
 const Main = () => (
 	<Routes>
-		<Route exact path='/' element={<Home />}></Route>
-		<Route exact path='/about' element={<About />}></Route>
+		<Route exact path='/' element={<Home/>}></Route>
+		<Route exact path='/about' element={<About/>}></Route>
+		<Route exact path='/catalog' element={<Catalog/>}></Route>
 	</Routes>
 );
 
