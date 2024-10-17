@@ -24,7 +24,7 @@ class About extends Component {
 	// global vairables with the results from the api call.
 	//
 	// The global variables are stored in the this.state dictionary
-	// as seen in the constructor above. The constructor is only
+	// in the constructor above. The constructor is only
 	// setting the initial default state values, and this function will
 	// update those values with the values we receive from the api.
 	componentDidMount() {

@@ -37,6 +37,7 @@
     ]
   },
   "devDependencies": {
-    "@types/jquery": "^3.5.31"
+    "@types/jquery": "^3.5.31",
+    "react-router-dom": "^6.27.0"
   }
 }
