@@ -1,0 +1,38 @@
+/* src/styles/dashboard.css*/
+
+.dashboard {
+    display: flex; /* Use flexbox for layout */
+    height: 100vh; /* Full height */
+}
+
+.sidebar {
+    width: 200px; /* Fixed width for the sidebar */
+    background-color: #dedede; /* Light background color */
+    padding: 20px;
+}
+
+.sidebar ul {
+    list-style: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+}
+
+.sidebar li {
+    padding: 10px; /* Space around each tab */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth background change */
+}
+
+.sidebar li:hover {
+    background-color: #ddd; /* Change background on hover */
+}
+
+.sidebar li.active {
+    background-color: #022448; /* Highlight active tab */
+    color: white; /* Change text color for active tab */
+}
+
+.content {
+    flex: 1; /* Take remaining space */
+    padding: 20px; /* Padding around the content */
+    background-color: rgb(212, 212, 212); /* White background for content area */
+}
