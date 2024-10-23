@@ -1,46 +1,50 @@
+import React, { Component } from 'react';
 import $ from 'jquery';
 
-var settings = {
-	"url": "https://svcs.ebay.com/services/search/FindingService/v1?keywords=iphone 15",
-	"method": "POST",
-	"timeout": 0,
-	"headers": {
-		"X-EBAY-SOA-SECURITY-APPNAME": "EthanCof-Team04We-PRD-66deb8e82-133a021b",
-		"X-EBAY-SOA-OPERATION-NAME": "findItemsAdvanced",
-		"x-ebay-soa-response-data-format": "JSON",
-		"x-ebay-soa-request-data-format": "JSON",
-		"Access-Control-Allow-Origin": "*/*",
-		"Content-Type": "application/json"
-	},
-	"data": JSON.stringify({
-		"findItemsAdvancedRequest": {
-			"itemFilter": [
-				{
-					"name": "ListingType",
-					"value": "FixedPrice"
-				},
-				{
-					"name": "Condition",
-					"value": "1000"
-				}
-			],
-			"paginationInput": {
-				"entriesPerPage": 25,
-				"pageNumber": 1
+class Catalog extends Component {
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			productimage: '',
+			productname: ''
+		};
+	}
+
+	componentDidMount() {
+		$.ajax({
+			url: 'https://ckszaimc23.execute-api.us-east-2.amazonaws.com/EBAYAPIDepolyment1/ebay-search',		// URL for the api call, just copy from the browser
+			type: 'POST',						// The type of API call
+			dataType: 'json',
+			success: (data) => {
+
+				var searchResult = data['findItemsAdvancedResponse']['0']['searchResult']['0'];
+				this.setState({
+					productimage: searchResult['item']['0']['galleryURL'],
+					productname: searchResult['item']['0']['title'],
+				}); 	// Update the state to the data received (if successful)
+
+				console.log(this.state.productimage);
+			},
+			error: (xhr, stat, err) => {
+				console.error('Error: ', err);			// Print the error if the api call failed
 			}
-		}
-	}),
-};
+		});
+	}
 
-$.ajax(settings).done(function (response) {
-	console.log(response);
-});
+	render() {
+		return (
+			<div className='catalog'>
+			<h1>Driver Reward Catalog</h1>
+			<p>Call your sponsor for more details at 1800-123-5555</p>
 
-const Catalog = () => (
-	<div className='catalog'>
-	<h1>Driver Reward Catalog</h1>
-	<p>Call your sponsor for more details at 1800-123-5555</p>
-	</div>
-);
+			<h2>Items</h2>
+			<p>Title: {this.state.productname}</p>
+			<img src={this.state.productimage}/>
+			</div>
+		);
+	}
+}
 
 export default Catalog;
