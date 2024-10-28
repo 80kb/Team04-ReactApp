@@ -54,6 +54,7 @@ class Catalog extends Component {
 			<input type="text" onChange={this.handleChange} />
 			<button type="button" onClick={this.handleSubmit}>Search</button>
 
+
 			<h2>Items</h2>
 			<p>Title: {this.state.productname}</p>
 			<p>Price: {this.state.productprice}</p>
