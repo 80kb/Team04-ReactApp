@@ -6,14 +6,14 @@ import Catalog from './Catalog';
 import Dashboard from './Dashboard';
 import Reports from './Reports';
 
-//This is the Home Page on Our Web.
+//This is the Home Page on Our WebApp. Its being done in the Main file since its easier to coordinate.
 const Home = () => (
 	<div className='home'>
 		<h1>Welcome to Driver Rewards (TM)!</h1>
 		<p>Under Construction</p>
 	</div>
 );
-//These are our paths for the Webapp, on the site when you click one of the tabs, this will help route you to the correct page.
+//These are our paths for the Webapp, on the site when you click one of the tabs, this will help you Access the correct info. for the page.
 const Main = () => (
 	<Routes>
 		<Route exact path='/' element={<Home/>}></Route>
