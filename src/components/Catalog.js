@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 
+//This means the Class Catalog Inherits the Component Class(from React), allowing us to use a variety of functions, such as props. 
+//Components help render things on the website.
 class Catalog extends Component {
 
 	constructor(props) {
@@ -13,13 +15,15 @@ class Catalog extends Component {
 			searchQuery: ''
 		};
 	}
-
+	//For our Search bar on the website, when something is input into it, it will catch it and set the search query to this value.
 	handleChange = (event) => {
 		this.setState({ searchQuery: event.target.value });
 	}
 
+	//This to help is what used to search the EBAY API on our webpage, using the search query from the handleChange.
 	handleSubmit = (event) => {
 		$.ajax({
+			//This comes from our API Gateway, and calls the lambda function to access the EBAY
 			url: 'https://ckszaimc23.execute-api.us-east-2.amazonaws.com/EBAYAPIDepolyment1/ebay-search?search=' + this.state.searchQuery,		// URL for the api call, just copy from the browser
 			type: 'POST',						// The type of API call
 			dataType: 'json',
@@ -39,7 +43,8 @@ class Catalog extends Component {
 			}
 		});
 	}
-
+	
+	//This Deals with displaying values,products and various other affects on the website.
 	render() {
 		return (
 			<div className='catalog'>
@@ -48,6 +53,7 @@ class Catalog extends Component {
 
 			<input type="text" onChange={this.handleChange} />
 			<button type="button" onClick={this.handleSubmit}>Search</button>
+
 
 			<h2>Items</h2>
 			<p>Title: {this.state.productname}</p>
