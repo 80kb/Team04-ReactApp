@@ -1,38 +1,45 @@
-/* src/styles/dashboard.css*/
-
 .dashboard {
-    display: flex; /* Use flexbox for layout */
-    height: 100vh; /* Full height */
+    display: flex;
+    height: 100vh; /* Ensure it takes the full height */
+    width: 100%; /* Ensure it takes the full width */
+    background: rgba(0, 0, 0, 0.1); /* Optional: Add a subtle background to differentiate */
 }
 
 .sidebar {
-    width: 200px; /* Fixed width for the sidebar */
-    background-color: #dedede; /* Light background color */
+    width: 250px; /* Fixed width for the sidebar */
+    background: rgba(255, 255, 255, 0.9); /* Background color for the sidebar */
     padding: 20px;
-}
-
-.sidebar ul {
-    list-style: none; /* Remove bullet points */
-    padding: 0; /* Remove padding */
-}
-
-.sidebar li {
-    padding: 10px; /* Space around each tab */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s ease; /* Smooth background change */
-}
-
-.sidebar li:hover {
-    background-color: #ddd; /* Change background on hover */
-}
-
-.sidebar li.active {
-    background-color: #022448; /* Highlight active tab */
-    color: white; /* Change text color for active tab */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .content {
-    flex: 1; /* Take remaining space */
-    padding: 20px; /* Padding around the content */
-    background-color: rgb(212, 212, 212); /* White background for content area */
+    flex: 1; /* Take the remaining space */
+    padding: 20px;
+    display: flex;
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+}
+
+.sidebar h3 {
+    margin-bottom: 1rem;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 10px 0;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.sidebar ul li:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.sidebar ul li.active {
+    font-weight: bold;
+    color: #007bff; /* Change color for the active tab */
 }

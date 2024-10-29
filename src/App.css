@@ -1,45 +1,82 @@
-html {
-	box-sizing: border-box;
-}
+/* App.css */
 
-*, *::before, *::after {
-	box-sizing: inherit;
-	padding: 0;
+html, body {
+	font-family: Arial, sans-serif;
+	background-color: #f5f5f5;
+	color: #333;
 	margin: 0;
-}
-
-.app {
-	width: 960px;
+	padding: 0;
+	box-sizing: border-box;
+  }
+  
+  .app-container {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+  }
+  
+  .app-header {
+	background-color: #333;
+	color: #fff;
+	text-align: center;
+	padding: 1rem;
+  }
+  
+  .app-header h1 {
+	font-size: 2.5rem;
+	margin: 0;
+  }
+  
+  .app-logo {
+	width: 40px;
+	margin-right: 10px;
+	vertical-align: middle;
+  }
+  
+  .app-main {
+	flex: 1;
+	padding: 2rem;
+	max-width: 960px;
 	margin: 0 auto;
-	padding: 20px;
-}
-
-nav ul {
+  }
+  
+  nav {
+	width: 100%;  /* Ensure full width */
+	background-color: #333;
+  }
+  
+  nav ul {
 	list-style: none;
 	display: flex;
-	background-color: black;
-	margin-bottom: 20px;
-}
-
-nav ul li {
-	padding: 20px;
-}
-
-nav ul li a {
-	color: white;
+	justify-content: center;
+	gap: 1.5rem;
+	padding: 1rem 0;
+	margin: 0;
+  }
+  
+  nav ul li a {
+	color: #fff;
 	text-decoration: none;
-}
-
-.current {
-	border-bottom: 4px solid white;
-}
-
-h1 {
-	margin-bottom: 20px;
-}
-
-p {
-	margin-bottom: 15px;
-}
-
-
+	font-weight: bold;
+	padding: 0.5rem 1rem;
+	transition: background 0.3s ease;
+  }
+  
+  nav ul li a:hover,
+  nav ul li a.current {
+	background-color: #fda085;
+	border-radius: 5px;
+  }
+  
+  .app-footer {
+	background-color: #333;
+	color: #fff;
+	text-align: center;
+	padding: 1rem;
+	font-size: 0.9rem;
+  }
+  
+  .app-footer p {
+	margin: 0;
+  }
+  

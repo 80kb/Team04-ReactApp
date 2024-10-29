@@ -1,10 +1,8 @@
-// src/components/Dashboard.js
-
 import React, { useState } from 'react';
-import '../styles/Dashboard.css'; // Import your CSS
+import '../styles/Dashboard.css'; 
 
 const Dashboard = () => {
-    const [activeTab, setActiveTab] = useState('viewPoints'); // Default active tab
+    const [activeTab, setActiveTab] = useState('viewPoints');
 
     const renderContent = () => {
         switch (activeTab) {

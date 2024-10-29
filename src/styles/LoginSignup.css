@@ -1,0 +1,31 @@
+
+
+.login-signup-container h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.login-signup-container p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.button-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.auth-button {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #ff4757; /* A nice red color */
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.auth-button:hover {
+    background-color: #e84118; /* Darker shade on hover */
+}
