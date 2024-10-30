@@ -4,8 +4,8 @@ import { NavLink } from 'react-router-dom';
 //Navigation deals with process of moving from one page to another.
 //This function deals with navigation of each web page.
 const Navigation = () => (
+	//The various links used to navigate around our Web App.
 	<nav>
-		//The various links used to navigate around our Web App.
 		<ul>
 		<li><NavLink to="/">Home</NavLink></li>
 		<li><NavLink to="/dashboard">Dashboard</NavLink></li>
