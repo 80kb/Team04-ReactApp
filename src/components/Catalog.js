@@ -19,12 +19,19 @@ class Catalog extends Component {
 	handleChange = (event) => {
 		this.setState({ searchQuery: event.target.value });
 	}
+	
+	//Deal with user hitting the enter button to search for something in the catalog.
+	handleKeyPress = (event) => {
+    	   if (event.key === 'Enter') {
+             this.handleSubmit(event);
+           }
+	};
 
 	//This to help is what used to search the EBAY API on our webpage, using the search query from the handleChange.
 	handleSubmit = (event) => {
 		$.ajax({
 			//This comes from our API Gateway, and calls the lambda function to access the EBAY
-			url: 'https://ckszaimc23.execute-api.us-east-2.amazonaws.com/EBAYAPIDepolyment1/ebay-search?search=' + this.state.searchQuery,		// URL for the api call, just copy from the browser
+			url: 'https://ckszaimc23.execute-api.us-east-2.amazonaws.com/EBAYAPIDepolyment1/ebay-search?search=' + this.state.searchQuery,//URL for the api call, just copy from the browser
 			type: 'POST',						// The type of API call
 			dataType: 'json',
 			success: (data) => {
@@ -51,7 +58,11 @@ class Catalog extends Component {
 			<h1>Driver Reward Catalog</h1>
 			<p>Call your sponsor for more details at 1800-123-5555</p>
 
-			<input type="text" onChange={this.handleChange} />
+			<input 
+			   type="text" 
+			   onChange={this.handleChange}//If the User clicks the Search Button.
+			   onKeyDown={this.handleKeyPress}//If the user hits the enter button on there keyboard.
+			/>
 			<button type="button" onClick={this.handleSubmit}>Search</button>
 
 
