@@ -10,11 +10,12 @@ class Catalog extends Component {
 
 		this.state = {
 			productimage: '',
-			productname: '',
+			productname: [],
 			productprice: '',
 			searchQuery: ''
 		};
 	}
+
 	//For our Search bar on the website, when something is input into it, it will catch it and set the search query to this value.
 	handleChange = (event) => {
 		this.setState({ searchQuery: event.target.value });
@@ -22,9 +23,9 @@ class Catalog extends Component {
 	
 	//Deal with user hitting the enter button to search for something in the catalog.
 	handleKeyPress = (event) => {
-    	   if (event.key === 'Enter') {
-             this.handleSubmit(event);
-           }
+		if (event.key === 'Enter') {
+			this.handleSubmit(event);
+		}
 	};
 
 	//This to help is what used to search the EBAY API on our webpage, using the search query from the handleChange.
@@ -37,13 +38,22 @@ class Catalog extends Component {
 			success: (data) => {
 
 				var searchResult = data['findItemsAdvancedResponse']['0']['searchResult']['0']['item'];
-				this.setState({
-					productimage: searchResult['0']['galleryURL'],
-					productname: searchResult['0']['title'],
-					productprice: searchResult['0']['sellingStatus']['0']['currentPrice']['0']['__value__'],
-				}); 	// Update the state to the data received (if successful)
 
-				console.log(this.state.productimage);
+				var testArr = [];
+
+				for( var i = 0; i < 15; i++ ) {
+					var index = i.toString();
+					testArr.push( searchResult[index]['title'][0] ); 
+
+					//this.setState({
+						//productimage: searchResult['0']['galleryURL'],
+						//productname: searchResult['0']['title'],
+						//productprice: searchResult['0']['sellingStatus']['0']['currentPrice']['0']['__value__'],
+					//}); 	// Update the state to the data received (if successful)
+				}
+
+				this.setState({ productname: testArr });
+				//console.log(this.state.productimage);
 			},
 			error: (xhr, stat, err) => {
 				console.error('Error: ', err);			// Print the error if the api call failed
@@ -67,9 +77,12 @@ class Catalog extends Component {
 
 
 			<h2>Items</h2>
-			<p>Title: {this.state.productname}</p>
-			<p>Price: {this.state.productprice}</p>
-			<img src={this.state.productimage}/>
+			<ul>
+			{this.state.productname.map((item, index) => (
+				<li key={index}>{item}</li>
+			))}
+			</ul>
+
 			</div>
 		);
 	}
