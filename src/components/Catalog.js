@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
+import '../styles/Catalog.css'; 
 
 //This means the Class Catalog Inherits the Component Class(from React), allowing us to use a variety of functions, such as props. 
 //Components help render things on the website.
@@ -9,9 +10,9 @@ class Catalog extends Component {
 		super(props);
 
 		this.state = {
-			productimage: '',
+			productimage: [],
 			productname: [],
-			productprice: '',
+			productprice: [],
 			searchQuery: ''
 		};
 	}
@@ -39,21 +40,23 @@ class Catalog extends Component {
 
 				var searchResult = data['findItemsAdvancedResponse']['0']['searchResult']['0']['item'];
 
-				var testArr = [];
+				var nameArr 	= [];
+				var imgArr 	= [];
+				var priceArr 	= [];
+
 
 				for( var i = 0; i < 15; i++ ) {
 					var index = i.toString();
-					testArr.push( searchResult[index]['title'][0] ); 
-
-					//this.setState({
-						//productimage: searchResult['0']['galleryURL'],
-						//productname: searchResult['0']['title'],
-						//productprice: searchResult['0']['sellingStatus']['0']['currentPrice']['0']['__value__'],
-					//}); 	// Update the state to the data received (if successful)
+					nameArr.push( searchResult[index]['title'][0] ); 
+					imgArr.push( searchResult[index]['galleryURL'][0] );
+					priceArr.push( searchResult[index]['sellingStatus']['0']['currentPrice']['0']['__value__'] );
 				}
 
-				this.setState({ productname: testArr });
-				//console.log(this.state.productimage);
+				this.setState({
+					productname: nameArr,
+					productimage: imgArr,
+					productprice: priceArr
+				});
 			},
 			error: (xhr, stat, err) => {
 				console.error('Error: ', err);			// Print the error if the api call failed
@@ -63,7 +66,9 @@ class Catalog extends Component {
 	
 	//This Deals with displaying values,products and various other affects on the website.
 	render() {
+
 		return (
+
 			<div className='catalog'>
 			<h1>Driver Reward Catalog</h1>
 			<p>Call your sponsor for more details at 1800-123-5555</p>
@@ -75,13 +80,17 @@ class Catalog extends Component {
 			/>
 			<button type="button" onClick={this.handleSubmit}>Search</button>
 
-
 			<h2>Items</h2>
-			<ul>
+
+			<div className="catalogGrid">
 			{this.state.productname.map((item, index) => (
-				<li key={index}>{item}</li>
+				<div className="catalogEntry" key={index}>
+					<img src={this.state.productimage[index]} />
+					<p>{item}</p>
+					<p>{this.state.productprice[index]}</p>
+				</div>
 			))}
-			</ul>
+			</div>
 
 			</div>
 		);
