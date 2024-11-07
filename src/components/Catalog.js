@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
+import { Authenticator } from '@aws-amplify/ui-react';
 import '../styles/Catalog.css'; 
 
 //This means the Class Catalog Inherits the Component Class(from React), allowing us to use a variety of functions, such as props. 
@@ -69,6 +70,7 @@ class Catalog extends Component {
 
 		return (
 
+      <Authenticator formFields={formFields}>
 			<div className='catalog'>
 			<h1>Driver Reward Catalog</h1>
 			<p>Call your sponsor for more details at 1800-123-5555</p>
@@ -93,8 +95,50 @@ class Catalog extends Component {
 			</div>
 
 			</div>
+      </Authenticator>
 		);
 	}
 }
+
+const formFields = {
+    signUp: {
+      given_name: {
+        order:1,
+        label:'First Name',
+        required:true
+      },
+      family_name: {
+        order: 2,
+        label:'Last Name',
+        required:true
+      },
+      email: {
+        order: 3,
+        placeholder: 'Enter your Email',
+        required:true
+      },
+      preferred_username: {
+        order: 4,
+        placeholder: 'Enter username',
+        required:true
+      },
+      password: {
+        order: 5,
+        placeholder: 'Enter your desired password',
+        required: true
+      },
+      confirm_password: {
+        order: 6,
+        placeholder: 'Enter the same password',
+        required: true
+      },
+      address: {
+        order: 7,
+        label: 'Address',
+        placeholder: 'Enter address',
+        required: true
+      },
+    },
+  }
 
 export default Catalog;

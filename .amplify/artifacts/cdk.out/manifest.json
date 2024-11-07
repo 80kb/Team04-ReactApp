@@ -1,0 +1,295 @@
+{
+  "version": "38.0.1",
+  "artifacts": {
+    "amplify-team04driverrewards-Cam-sandbox-def3365f65.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "amplify-team04driverrewards-Cam-sandbox-def3365f65.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "amplify-team04driverrewards-Cam-sandbox-def3365f65": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "amplify-team04driverrewards-Cam-sandbox-def3365f65.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "amplify:deployment-type": "sandbox",
+          "created-by": "amplify"
+        },
+        "validateOnSynth": false,
+        "notificationArns": [],
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/9ca49ffadcee331e5b3dfd2ab1646a8ac46be0ee3f809b4770e024f0ef11423e.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "amplify-team04driverrewards-Cam-sandbox-def3365f65.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "amplify-team04driverrewards-Cam-sandbox-def3365f65.assets"
+      ],
+      "metadata": {
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "amplify:deployment-type",
+                "Value": "sandbox"
+              },
+              {
+                "Key": "created-by",
+                "Value": "amplify"
+              }
+            ]
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/deploymentType": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "deploymentType"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/region": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "region"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth/amplifyAuth/UserPool/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthUserPool4BA7F805"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth/amplifyAuth/UserPoolAppClient/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthUserPoolAppClient2626C6F8"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth/amplifyAuth/IdentityPool": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthIdentityPool3FDE84CC"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth/amplifyAuth/authenticatedUserRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthauthenticatedUserRoleD8DA3689"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth/amplifyAuth/unauthenticatedUserRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthunauthenticatedUserRole2B524D9E"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth/amplifyAuth/IdentityPoolRoleAttachment": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyAuthIdentityPoolRoleAttachment045F17C8"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth/amplifyteam04driverrewardsCamsandboxdef3365f65authamplifyAuthUserPool80C81E8ARef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyteam04driverrewardsCamsandboxdef3365f65authamplifyAuthUserPool80C81E8ARef"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth/amplifyteam04driverrewardsCamsandboxdef3365f65authamplifyAuthUserPoolAppClient0CF66DECRef": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyteam04driverrewardsCamsandboxdef3365f65authamplifyAuthUserPoolAppClient0CF66DECRef"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth/amplifyteam04driverrewardsCamsandboxdef3365f65authamplifyAuthIdentityPoolB9E7B7A5Ref": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyteam04driverrewardsCamsandboxdef3365f65authamplifyAuthIdentityPoolB9E7B7A5Ref"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/auth.NestedStack/auth.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "auth179371D7"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/userPoolId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "userPoolId"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/webClientId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "webClientId"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/identityPoolId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "identityPoolId"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/authRegion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "authRegion"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/allowUnauthenticatedIdentities": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "allowUnauthenticatedIdentities"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/signupAttributes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "signupAttributes"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/usernameAttributes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "usernameAttributes"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/verificationMechanisms": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "verificationMechanisms"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/passwordPolicyMinLength": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "passwordPolicyMinLength"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/passwordPolicyRequirements": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "passwordPolicyRequirements"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/mfaConfiguration": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mfaConfiguration"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/mfaTypes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mfaTypes"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/socialProviders": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "socialProviders"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/oauthCognitoDomain": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthCognitoDomain"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/oauthScope": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthScope"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/oauthRedirectSignIn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthRedirectSignIn"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/oauthRedirectSignOut": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthRedirectSignOut"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/oauthResponseType": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthResponseType"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/oauthClientId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "oauthClientId"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/groups": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "groups"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/amplify-team04driverrewards-Cam-sandbox-def3365f65/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "amplify-team04driverrewards-Cam-sandbox-def3365f65"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

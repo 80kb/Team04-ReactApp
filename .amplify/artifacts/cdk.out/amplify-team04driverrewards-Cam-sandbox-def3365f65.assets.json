@@ -1,0 +1,32 @@
+{
+  "version": "38.0.1",
+  "files": {
+    "385f747fd59c8c6240170be9d93573d112bca303f53f96f25605df648762ebbf": {
+      "source": {
+        "path": "amplifyteam04driverrewardsCamsandboxdef3365f65auth7D516B97.nested.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "385f747fd59c8c6240170be9d93573d112bca303f53f96f25605df648762ebbf.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    },
+    "9ca49ffadcee331e5b3dfd2ab1646a8ac46be0ee3f809b4770e024f0ef11423e": {
+      "source": {
+        "path": "amplify-team04driverrewards-Cam-sandbox-def3365f65.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "9ca49ffadcee331e5b3dfd2ab1646a8ac46be0ee3f809b4770e024f0ef11423e.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
