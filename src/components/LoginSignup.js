@@ -58,7 +58,13 @@ const LoginSignup = () => {
         order: 6,
         placeholder: 'Enter the same password',
         required: true
-      }
+      },
+      address: {
+        order: 7,
+        label: 'Address',
+        placeholder: 'Enter address',
+        required: true
+      },
     },
   }
   

@@ -1,17 +1,15 @@
 {
   "auth": {
-    "user_pool_id": "us-east-1_ryjtKeTd5",
+    "user_pool_id": "us-east-1_zSnz9xWVL",
     "aws_region": "us-east-1",
-    "user_pool_client_id": "6uo6r2dflnvavcp9gde9phrhn7",
-    "identity_pool_id": "us-east-1:55cae70b-0b77-4197-b013-2161b21d1e9b",
+    "user_pool_client_id": "7rmo6e7euf01dmgsb3a3oe6ubs",
+    "identity_pool_id": "us-east-1:c5ddc182-8ffb-4856-aa55-29796129ede5",
     "mfa_methods": [],
     "standard_required_attributes": [
       "email",
-      "phone_number",
       "given_name",
       "family_name",
-      "birthdate",
-      "address"
+      "birthdate"
     ],
     "username_attributes": [
       "email"
