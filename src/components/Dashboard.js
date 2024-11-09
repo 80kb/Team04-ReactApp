@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/Dashboard.css'; 
-import { Authenticator } from '@aws-amplify/ui-react';
+//import { Authenticator } from '@aws-amplify/ui-react';
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('viewPoints');
@@ -13,14 +13,16 @@ const Dashboard = () => {
                 return <h2>Account Details: [Placeholder for Account Info]</h2>;
             case 'rewards':
                 return <h2>Rewards: [Placeholder for Rewards]</h2>;
+	    case 'application':
+		return <h2>Application: [Placeholder for Application]</h2>;
             default:
                 return <h2>Select a tab to see content</h2>;
         }
     };
 
     return (
-        <Authenticator
-        formFields={formFields}>
+        //<Authenticator
+        //formFields={formFields}>
             <div className="dashboard">
                 <div className="sidebar">
                     <h3>Dashboard</h3>
@@ -28,17 +30,18 @@ const Dashboard = () => {
                         <li onClick={() => setActiveTab('viewPoints')} className={activeTab === 'viewPoints' ? 'active' : ''}>View My Points</li>
                         <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
                         <li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
+	    		<li onClick={() => setActiveTab('application')} className={activeTab === 'application' ? 'active' : ''}>Application</li>
                     </ul>
                 </div>
                 <div className="content">
                     {renderContent()}
                 </div>
             </div>
-        </Authenticator>
+        //</Authenticator>
     );
 };
 
-const formFields = {
+/*const formFields = {
     signUp: {
       given_name: {
         order:1,
@@ -77,6 +80,6 @@ const formFields = {
         required: true
       },
     },
-  }
+  }*/
 
 export default Dashboard;
