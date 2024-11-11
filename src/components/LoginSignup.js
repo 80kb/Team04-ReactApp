@@ -1,33 +1,28 @@
-import React from 'react';
-import '../styles/LoginSignup.css';
-import { Authenticator } from '@aws-amplify/ui-react';
+import { Authenticator, SignOut } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
 import outputs from '../amplify_outputs.json';
 import '@aws-amplify/ui-react/styles.css';
 
 Amplify.configure(outputs);
 
-
 const LoginSignup = () => {
     return (
-        <Authenticator
-        formFields={formFields}>
-
-            <div className="login-signup-container">
-                <p>Please choose an option below:</p>
-                <div className="button-container">
-                    <button className="auth-button">Login</button>
-                    <button className="auth-button">Sign Up</button>
+        <Authenticator formFields={formFields}>
+            {({ signOut, user }) => (
+                <div className="login-signup-container">
+                    <p>Welcome, {user ? user.username : "please choose an option below:"}</p>
+                    <div className="button-container">
+                        {user && (
+                            <button className="auth-button" onClick={signOut}>Sign Out</button>
+                        )}
+                    </div>
                 </div>
-            </div>
+            )}
         </Authenticator>
     );
 };
 
-
-
-  
-  const formFields = {
+const formFields = {
     signUp: {
       given_name: {
         order:1,
@@ -66,7 +61,6 @@ const LoginSignup = () => {
         required: true
       },
     },
-  }
-  
+}
 
 export default LoginSignup;
