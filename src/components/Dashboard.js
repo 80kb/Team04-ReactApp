@@ -8,11 +8,11 @@ const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('viewPoints');
 
     const [applicationData, setApplicationData] = useState({
-  	ApplicationID: 'unique_number',
-  	Application_Status: 'Undetermined',
-  	Driver_Name: 'Joe Doe',
-  	Sponsor_Org: 'Amazon',
-  	email: 'joe.doe@example.com',
+  	applicationID: 0,
+  	applicationStatus: 'Processing',
+  	driverName: '',
+  	sponsorOrg: '',
+  	applicationDate: new Date().toLocaleDateString(),
      });
 
 
@@ -24,17 +24,41 @@ const changeData = (e) => {
     }));
   };
 
+ const generateUniqueID = () => Date.now();
+
      // Function to handle submission of all application data at once
-  const submitApplication = () => {
-    // You can send applicationData to an API or DynamoDB here
-	console.log("Driver Name: ", applicationData.Driver_Name);
-        console.log("Sponsor Org: ", applicationData.Sponsor_Org);
-        console.log("Email: ", applicationData.email);
+  const submitApplication = async(event) => {
+  event.preventDefault(); // Prevents form submission reload
+  //const submitApplication = () => {
 
-    console.log('Submitting application data:', applicationData);
-    // Here, you might also call a function to save this data to your backend!!
+	const uniqueID = generateUniqueID();
+  	applicationData.applicationID = uniqueID;
+                                      //https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications
+     try {
+        const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(applicationData)
+        });
 
-    alert("Your application has been submitted successfully!");
+        if (!response.ok) {
+            throw new Error('Failed to submit application');
+        }
+
+        const result = await response.json();
+        console.log(result.message);  // Message from Lambda response
+        alert('Application submitted successfully!');
+
+    } catch (error) {
+        console.error('Error submitting application:', error);
+        alert('There was an error submitting the application.');
+    }
+
+    	//console.log('Submitting application data:', applicationData);
+        // Here, you might also call a function to save this data to your backend!!
+    	//alert("Your application has been submitted successfully!");
   };
 
   // Conditionally render content based on activeTab
@@ -56,7 +80,7 @@ const changeData = (e) => {
                   Driver Name:
                   <input
                     type="text"
-                    name="Driver_Name"
+                    name="driverName"
                     value={applicationData.Driver_Name}
                     onChange={changeData}
                   />
@@ -68,20 +92,8 @@ const changeData = (e) => {
                   Sponsor Org:
                   <input
                     type="text"
-                    name="Sponsor_Org"
+                    name="sponsorOrg"
                     value={applicationData.Sponsor_Org}
-                    onChange={changeData}
-                  />
-                </label>
-              </div>
-
-              <div>
-                <label>
-                  Email:
-                  <input
-                    type="email"
-                    name="email"
-                    value={applicationData.email}
                     onChange={changeData}
                   />
                 </label>
