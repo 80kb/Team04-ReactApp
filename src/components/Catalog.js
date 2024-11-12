@@ -14,8 +14,22 @@ class Catalog extends Component {
 			productimage: [],
 			productname: [],
 			productprice: [],
-			searchQuery: ''
+			searchQuery: '',
+			exchangeRate: 1
 		};
+
+		$.ajax({
+			url: 'https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/sponsorOrgs',		// URL for the api call, just copy from the browser
+			type: 'GET',						// The type of API call
+			dataType: 'json',
+			success: (data) => {
+				//console.log( data['Items']['0']['exchangeRate'] );
+				this.setState({ exchangeRate: data['Items']['0']['exchangeRate'] });
+			},
+			error: (xhr, stat, err) => {
+				console.error('Error: ', err);			// Print the error if the api call failed
+			}
+		});
 	}
 
 	//For our Search bar on the website, when something is input into it, it will catch it and set the search query to this value.
@@ -32,6 +46,7 @@ class Catalog extends Component {
 
 	//This to help is what used to search the EBAY API on our webpage, using the search query from the handleChange.
 	handleSubmit = (event) => {
+
 		$.ajax({
 			//This comes from our API Gateway, and calls the lambda function to access the EBAY
 			url: 'https://ckszaimc23.execute-api.us-east-2.amazonaws.com/EBAYAPIDepolyment1/ebay-search?search=' + this.state.searchQuery,//URL for the api call, just copy from the browser
@@ -51,7 +66,8 @@ class Catalog extends Component {
 					var index = i.toString();
 					nameArr.push( searchResult[index]['title'][0] ); 
 					imgArr.push( searchResult[index]['galleryURL'][0] );
-					priceArr.push( searchResult[index]['sellingStatus']['0']['currentPrice']['0']['__value__'] );
+					priceArr.push( 
+						searchResult[index]['sellingStatus']['0']['currentPrice']['0']['__value__'] * this.state.exchangeRate );
 				}
 
 				this.setState({
@@ -90,7 +106,7 @@ class Catalog extends Component {
 				<div className="catalogEntry" key={index}>
 					<img src={this.state.productimage[index]} />
 					<p>{item}</p>
-					<p>{this.state.productprice[index]}</p>
+					<p>{this.state.productprice[index]} points</p>
 				</div>
 			))}
 			</div>
