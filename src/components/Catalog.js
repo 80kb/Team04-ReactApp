@@ -45,8 +45,9 @@ class Catalog extends Component {
 				var imgArr 	= [];
 				var priceArr 	= [];
 
+				var length = searchResult.length > 15 ? 15 : searchResult.length;
 
-				for( var i = 0; i < 15; i++ ) {
+				for( var i = 0; i < length; i++ ) {
 					var index = i.toString();
 					nameArr.push( searchResult[index]['title'][0] ); 
 					imgArr.push( searchResult[index]['galleryURL'][0] );
