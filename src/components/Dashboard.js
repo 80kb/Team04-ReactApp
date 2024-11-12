@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/Dashboard.css';
-//import { Authenticator } from '@aws-amplify/ui-react';
+import { Authenticator } from '@aws-amplify/ui-react';
 
 
 
@@ -27,20 +27,23 @@ const changeData = (e) => {
  const generateUniqueID = () => Date.now();
 
      // Function to handle submission of all application data at once
-  const submitApplication = async(event) => {
-  event.preventDefault(); // Prevents form submission reload
-  //const submitApplication = () => {
+  const submitApplication = async (event) => {
+    event.preventDefault(); // Prevent form reload
 
-	const uniqueID = generateUniqueID();
-  	applicationData.applicationID = uniqueID;
-                                      //https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications
-     try {
+    // Generate a unique ID for the application
+    const uniqueID = generateUniqueID();
+    const applicationDataWithID = {
+        ...applicationData,
+        applicationID: uniqueID
+    };
+
+    try {
         const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(applicationData)
+            body: JSON.stringify(applicationDataWithID)  // Send updated application data
         });
 
         if (!response.ok) {
@@ -48,18 +51,15 @@ const changeData = (e) => {
         }
 
         const result = await response.json();
-        console.log(result.message);  // Message from Lambda response
+        console.log('Application submitted successfully:', result);  // Message from Lambda response
         alert('Application submitted successfully!');
 
     } catch (error) {
         console.error('Error submitting application:', error);
         alert('There was an error submitting the application.');
     }
-
-    	//console.log('Submitting application data:', applicationData);
-        // Here, you might also call a function to save this data to your backend!!
-    	//alert("Your application has been submitted successfully!");
   };
+
 
   // Conditionally render content based on activeTab
   const renderContent = () => {
@@ -74,6 +74,8 @@ const changeData = (e) => {
         return (
           <div>
             <h2>Application Details</h2>
+	<p>Below, Enter Your Name and Sponsor Orgaziation to Register for
+		a Good Drivers Rewards Account with that Sponsor.</p>
             <form>
               <div>
                 <label>
@@ -114,8 +116,8 @@ const changeData = (e) => {
 
 
     return (
-        //<Authenticator
-        //formFields={formFields}>
+        <Authenticator
+        formFields={formFields}>
             <div className="dashboard">
                 <div className="sidebar">
                     <h3>Dashboard</h3>
@@ -130,11 +132,11 @@ const changeData = (e) => {
                     {renderContent()}
                 </div>
             </div>
-        //</Authenticator>
+        </Authenticator>
     );
 };
 
-/*const formFields = {
+const formFields = {
     signUp: {
       given_name: {
         order:1,
@@ -173,6 +175,6 @@ const changeData = (e) => {
         required: true
       },
     },
-  }*/
+  }
 
 export default Dashboard;
