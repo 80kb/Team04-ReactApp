@@ -1,22 +1,119 @@
 import React, { useState } from 'react';
-import '../styles/Dashboard.css'; 
+import '../styles/Dashboard.css';
 import { Authenticator } from '@aws-amplify/ui-react';
+
+
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('viewPoints');
 
-    const renderContent = () => {
-        switch (activeTab) {
-            case 'viewPoints':
-                return <h2>View My Points: [Placeholder for Points]</h2>;
-            case 'accountDetails':
-                return <h2>Account Details: [Placeholder for Account Info]</h2>;
-            case 'rewards':
-                return <h2>Rewards: [Placeholder for Rewards]</h2>;
-            default:
-                return <h2>Select a tab to see content</h2>;
-        }
+    const [applicationData, setApplicationData] = useState({
+  	applicationID: 0,
+  	applicationStatus: 'Processing',
+  	driverName: '',
+  	sponsorOrg: '',
+  	applicationDate: new Date().toLocaleDateString(),
+     });
+
+
+const changeData = (e) => {
+    const { name, value } = e.target;
+    setApplicationData((prevData) => ({
+      ...prevData,
+      [name]: value, // Update only the field that changed
+    }));
+  };
+
+ const generateUniqueID = () => Date.now();
+
+     // Function to handle submission of all application data at once
+  const submitApplication = async (event) => {
+    event.preventDefault(); // Prevent form reload
+
+    // Generate a unique ID for the application
+    const uniqueID = generateUniqueID();
+    const applicationDataWithID = {
+        ...applicationData,
+        applicationID: uniqueID
     };
+
+    try {
+        const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(applicationDataWithID)  // Send updated application data
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to submit application');
+        }
+
+        const result = await response.json();
+        console.log('Application submitted successfully:', result);  // Message from Lambda response
+        alert('Application submitted successfully!');
+
+    } catch (error) {
+        console.error('Error submitting application:', error);
+        alert('There was an error submitting the application.');
+    }
+  };
+
+
+  // Conditionally render content based on activeTab
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'viewPoints':
+        return <h2>View My Points: [Placeholder for Points]</h2>;
+      case 'accountDetails':
+        return <h2>Account Details: [Placeholder for Account Info]</h2>;
+      case 'rewards':
+        return <h2>Rewards: [Placeholder for Rewards]</h2>;
+      case 'application':
+        return (
+          <div>
+            <h2>Application Details</h2>
+	<p>Below, Enter Your Name and Sponsor Orgaziation to Register for
+		a Good Drivers Rewards Account with that Sponsor.</p>
+            <form>
+              <div>
+                <label>
+                  Driver Name:
+                  <input
+                    type="text"
+                    name="driverName"
+                    value={applicationData.Driver_Name}
+                    onChange={changeData}
+                  />
+                </label>
+              </div>
+
+              <div>
+                <label>
+                  Sponsor Org:
+                  <input
+                    type="text"
+                    name="sponsorOrg"
+                    value={applicationData.Sponsor_Org}
+                    onChange={changeData}
+                  />
+                </label>
+              </div>
+
+              {/* Submit Button */}
+              <button type="button" onClick={submitApplication}>
+                Submit Application
+              </button>
+            </form>
+          </div>
+        );
+      default:
+        return <h2>Placeholder Content</h2>;
+    }
+
+  };
+
 
     return (
         <Authenticator
@@ -28,6 +125,7 @@ const Dashboard = () => {
                         <li onClick={() => setActiveTab('viewPoints')} className={activeTab === 'viewPoints' ? 'active' : ''}>View My Points</li>
                         <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
                         <li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
+	    		<li onClick={() => setActiveTab('application')} className={activeTab === 'application' ? 'active' : ''}>Application</li>
                     </ul>
                 </div>
                 <div className="content">
