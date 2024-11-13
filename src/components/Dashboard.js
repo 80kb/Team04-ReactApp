@@ -5,7 +5,7 @@ import { getCurrentUser } from 'aws-amplify/auth';
 
 
 const Dashboard = () => {
-    const [activeTab, setActiveTab] = useState('viewPoints');
+    const [activeTab, setActiveTab] = useState(null);
     const [userData, setUserData] = useState(null);
     const [userID, setUserID] = useState(null);
 
@@ -25,7 +25,7 @@ const Dashboard = () => {
 
     //Fetch user data on entering the tab
     useEffect(() => {
-      if(activeTab === 'accountDetails' && userID) {
+      if(activeTab === 'accountDetails' || activeTab === 'viewPoints' && userID) {
         fetchUserData();
       }
     }, [activeTab, userID]);
@@ -102,7 +102,18 @@ const changeData = (e) => {
   const renderContent = () => {
     switch (activeTab) {
       case 'viewPoints':
-        return <h2>View My Points: [Placeholder for Points]</h2>;
+        return (
+          <div>
+              <h2>View Points</h2>
+              {userData ? (
+                  <div>
+                      <p><strong>Points:</strong> {userData.Points}</p>
+                  </div>
+              ) : (
+                  <p>Loading user points...</p>
+              )}
+          </div>
+        )
       case 'accountDetails':
         return (
           <div>
@@ -164,7 +175,7 @@ const changeData = (e) => {
           </div>
         );
       default:
-        return <h2>Placeholder Content</h2>;
+        return <h2>Select a Tab to View</h2>;
     }
 
   };
