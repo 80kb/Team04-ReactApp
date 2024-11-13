@@ -1,11 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Dashboard.css';
 import { Authenticator } from '@aws-amplify/ui-react';
-
+import { getCurrentUser } from 'aws-amplify/auth';
 
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('viewPoints');
+    const [userData, setUserData] = useState(null);
+    const [userID, setUserID] = useState(null);
+
+    // Fetch user ID on entering the tab
+    useEffect(() => {
+      const fetchUserID = async () => {
+          try {
+              const user = await getCurrentUser();
+              setUserID(user.username);
+          } catch (error) {
+              console.error('Error fetching user ID:', error);
+          }
+      };
+
+      fetchUserID();
+    }, []);
+
+    //Fetch user data on entering the tab
+    useEffect(() => {
+      if(activeTab === 'accountDetails' && userID) {
+        fetchUserData();
+      }
+    }, [activeTab, userID]);
+
+    // GET all user data
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${userID}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+        }
+        const result = await response.json();
+        setUserData(result.Item);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
 
     const [applicationData, setApplicationData] = useState({
   	applicationID: 0,
@@ -67,7 +104,25 @@ const changeData = (e) => {
       case 'viewPoints':
         return <h2>View My Points: [Placeholder for Points]</h2>;
       case 'accountDetails':
-        return <h2>Account Details: [Placeholder for Account Info]</h2>;
+        return (
+          <div>
+              <h2>Account Details</h2>
+              {userData ? (
+                  <div>
+                      <p><strong>First Name:</strong> {userData.FirstName}</p>
+                      <p><strong>Last Name:</strong> {userData.LastName}</p>
+                      <p><strong>Email:</strong> {userData.Email}</p>
+                      <p><strong>Phone Number:</strong> {userData.PhoneNumber}</p>
+                      <p><strong>Address:</strong> {userData.Address}</p>
+                      <p><strong>Birthdate:</strong> {userData.Birthdate}</p>
+                      <p><strong>Username:</strong> {userData.Username}</p>
+                      <p><strong>Created At:</strong> {new Date(userData.CreatedAt).toLocaleString()}</p>
+                  </div>
+              ) : (
+                  <p>Loading user details...</p>
+              )}
+          </div>
+      );
       case 'rewards':
         return <h2>Rewards: [Placeholder for Rewards]</h2>;
       case 'application':
