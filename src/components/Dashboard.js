@@ -8,6 +8,8 @@ const Dashboard = () => {
     const [activeTab, setActiveTab] = useState(null);
     const [userData, setUserData] = useState(null);
     const [userID, setUserID] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedData, setEditedData] = useState({});
 
     // Fetch user ID on entering the tab
     useEffect(() => {
@@ -41,6 +43,50 @@ const Dashboard = () => {
         setUserData(result.Item);
       } catch (error) {
         console.error('Error fetching user data:', error);
+      }
+    };
+
+    // Edit button clicks
+    const handleEdit = () => {
+      setIsEditing(true);
+      setEditedData(userData);
+    };
+
+    // Handle input change in edit form
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setEditedData((prevData) => ({
+          ...prevData,
+          [name]: value,
+      }));
+    };
+
+    // Submit edited data
+    const submitEdits = async () => {
+      try {
+          // Update in Cognito
+          /*await Auth.updateUserAttributes(Auth.currentAuthenticatedUser(), {
+              given_name: editedData.FirstName,
+              family_name: editedData.LastName,
+              email: editedData.Email,
+              address: editedData.Address,
+              phone_number: editedData.PhoneNumber,
+          });
+          */
+          // Update in DynamoDB
+          await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${userID}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(editedData),
+          });
+
+          // Update local state and exit edit mode
+          setUserData(editedData);
+          setIsEditing(false);
+          alert('Account details updated successfully!');
+      } catch (error) {
+          console.error('Error updating account details:', error);
+          alert('There was an error updating your account details.');
       }
     };
 
@@ -118,19 +164,49 @@ const changeData = (e) => {
         return (
           <div>
               <h2>Account Details</h2>
-              {userData ? (
+              {isEditing ? (
                   <div>
-                      <p><strong>First Name:</strong> {userData.FirstName}</p>
-                      <p><strong>Last Name:</strong> {userData.LastName}</p>
-                      <p><strong>Email:</strong> {userData.Email}</p>
-                      <p><strong>Phone Number:</strong> {userData.PhoneNumber}</p>
-                      <p><strong>Address:</strong> {userData.Address}</p>
-                      <p><strong>Birthdate:</strong> {userData.Birthdate}</p>
-                      <p><strong>Username:</strong> {userData.Username}</p>
-                      <p><strong>Created At:</strong> {new Date(userData.CreatedAt).toLocaleString()}</p>
+                      <label>
+                          First Name:
+                          <input type="text" name="FirstName" value={editedData.FirstName || ''} onChange={handleChange} />
+                      </label>
+                      <label>
+                          Last Name:
+                          <input type="text" name="LastName" value={editedData.LastName || ''} onChange={handleChange} />
+                      </label>
+                      <label>
+                          Email:
+                          <input type="email" name="Email" value={editedData.Email || ''} onChange={handleChange} />
+                      </label>
+                      <label>
+                          Phone Number:
+                          <input type="tel" name="PhoneNumber" value={editedData.PhoneNumber || ''} onChange={handleChange} />
+                      </label>
+                      <label>
+                          Address:
+                          <input type="text" name="Address" value={editedData.Address || ''} onChange={handleChange} />
+                      </label>
+                      <button onClick={submitEdits}>Save Changes</button>
+                      <button onClick={() => setIsEditing(false)}>Cancel</button>
                   </div>
               ) : (
-                  <p>Loading user details...</p>
+                  <div>
+                      {userData ? (
+                          <div>
+                              <p><strong>First Name:</strong> {userData.FirstName}</p>
+                              <p><strong>Last Name:</strong> {userData.LastName}</p>
+                              <p><strong>Email:</strong> {userData.Email}</p>
+                              <p><strong>Phone Number:</strong> {userData.PhoneNumber}</p>
+                              <p><strong>Address:</strong> {userData.Address}</p>
+                              <p><strong>Birthdate:</strong> {userData.Birthdate}</p>
+                              <p><strong>Username:</strong> {userData.Username}</p>
+                              <p><strong>Created At:</strong> {new Date(userData.CreatedAt).toLocaleString()}</p>
+                              <button onClick={handleEdit}>Edit</button>
+                          </div>
+                      ) : (
+                          <p>Loading user details...</p>
+                      )}
+                  </div>
               )}
           </div>
       );
