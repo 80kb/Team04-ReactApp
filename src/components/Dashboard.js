@@ -25,7 +25,7 @@ const Dashboard = () => {
 
     //Fetch user data on entering the tab
     useEffect(() => {
-      if(activeTab === 'accountDetails' || activeTab === 'viewPoints' && userID) {
+      if(userID) {
         fetchUserData();
       }
     }, [activeTab, userID]);
@@ -140,8 +140,8 @@ const changeData = (e) => {
         return (
           <div>
             <h2>Application Details</h2>
-	<p>Below, Enter Your Name and Sponsor Orgaziation to Register for
-		a Good Drivers Rewards Account with that Sponsor.</p>
+	          <p>Below, Enter Your Name and Sponsor Orgaziation to Register for
+		        a Good Drivers Rewards Account with that Sponsor.</p>
             <form>
               <div>
                 <label>
@@ -191,7 +191,7 @@ const changeData = (e) => {
                         <li onClick={() => setActiveTab('viewPoints')} className={activeTab === 'viewPoints' ? 'active' : ''}>View My Points</li>
                         <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
                         <li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
-	    		<li onClick={() => setActiveTab('application')} className={activeTab === 'application' ? 'active' : ''}>Application</li>
+	    		              <li onClick={() => setActiveTab('application')} className={activeTab === 'application' ? 'active' : ''}>Application</li>
                     </ul>
                 </div>
                 <div className="content">
