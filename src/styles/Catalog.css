@@ -17,9 +17,58 @@
 	background: rgba(255, 255, 255, 1.0); /* Optional: Add a subtle background to differentiate */
 	padding: 5px;
 	/* margin: 30px; */
+	transition: background 0.3s, transform 0.1s ease; /* Unified transition */
+}
+
+/* Hover effects for interactivity */
+.catalogEntry.clickable {
+    cursor: pointer;
+}
+
+.catalogEntry.clickable:hover {
+    background: rgba(200, 200, 200, 1.0); /* Slight background change on hover */
+    transform: scale(1.02); /* Subtle enlargement on hover */
+}
+
+/*Used for when clicking on catalog item, displays pointer icon.*/
+.catalogEntry.clickable {
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.catalogEntry.clickable:hover {
+    transform: scale(1.02);
 }
 
 .catalogEntry:hover {
 	background: rgba(200, 200, 200, 1.0); /* Optional: Add a subtle background to differentiate */
 	transition: background 0.3s;
+}
+
+/*Used for Cart.Js */
+.cart {
+    border-top: 2px solid #ccc;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.cartItems {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cartItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.cartItem img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
 }

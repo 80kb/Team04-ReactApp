@@ -1,120 +1,138 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import { Authenticator } from '@aws-amplify/ui-react';
-import '../styles/Catalog.css'; 
+import Cart from './Cart';
+import '../styles/Catalog.css';
 
-//This means the Class Catalog Inherits the Component Class(from React), allowing us to use a variety of functions, such as props. 
-//Components help render things on the website.
 class Catalog extends Component {
+    constructor(props) {
+        super(props);
 
-	constructor(props) {
-		super(props);
+        this.state = {
+            productimage: [],
+            productname: [],
+            productprice: [],
+            searchQuery: '',
+            exchangeRate: 1,
+            cart: [],
+            showCart: false // New state to track cart visibility
+        };
+    }
 
-		this.state = {
-			productimage: [],
-			productname: [],
-			productprice: [],
-			searchQuery: '',
-			exchangeRate: 1
-		};
+    componentDidMount() {
+        $.ajax({
+            url: 'https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/sponsorOrgs', 
+            type: 'GET',
+            dataType: 'json',
+            success: (data) => {
+                this.setState({ exchangeRate: data['Items']['0']['exchangeRate'] });
+            },
+            error: (xhr, stat, err) => {
+                console.error('Error: ', err);
+            }
+        });
+    }
 
-		$.ajax({
-			url: 'https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/sponsorOrgs',		// URL for the api call, just copy from the browser
-			type: 'GET',						// The type of API call
-			dataType: 'json',
-			success: (data) => {
-				//console.log( data['Items']['0']['exchangeRate'] );
-				this.setState({ exchangeRate: data['Items']['0']['exchangeRate'] });
-			},
-			error: (xhr, stat, err) => {
-				console.error('Error: ', err);			// Print the error if the api call failed
-			}
-		});
-	}
+    handleChange = (event) => {
+        this.setState({ searchQuery: event.target.value });
+    };
 
-	//For our Search bar on the website, when something is input into it, it will catch it and set the search query to this value.
-	handleChange = (event) => {
-		this.setState({ searchQuery: event.target.value });
-	}
-	
-	//Deal with user hitting the enter button to search for something in the catalog.
-	handleKeyPress = (event) => {
-		if (event.key === 'Enter') {
-			this.handleSubmit(event);
-		}
-	};
+    handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            this.handleSubmit(event);
+        }
+    };
 
-	//This to help is what used to search the EBAY API on our webpage, using the search query from the handleChange.
-	handleSubmit = (event) => {
+    handleSubmit = () => {
+        $.ajax({
+            url: 'https://ckszaimc23.execute-api.us-east-2.amazonaws.com/EBAYAPIDepolyment1/ebay-search?search=' + this.state.searchQuery, 
+            type: 'POST',
+            dataType: 'json',
+            success: (data) => {
+                const searchResult = data['findItemsAdvancedResponse']['0']['searchResult']['0']['item'];
 
-		$.ajax({
-			//This comes from our API Gateway, and calls the lambda function to access the EBAY
-			url: 'https://ckszaimc23.execute-api.us-east-2.amazonaws.com/EBAYAPIDepolyment1/ebay-search?search=' + this.state.searchQuery,//URL for the api call, just copy from the browser
-			type: 'POST',						// The type of API call
-			dataType: 'json',
-			success: (data) => {
+                const nameArr = [];
+                const imgArr = [];
+                const priceArr = [];
 
-				var searchResult = data['findItemsAdvancedResponse']['0']['searchResult']['0']['item'];
+                const length = searchResult.length > 15 ? 15 : searchResult.length;
+                for (let i = 0; i < length; i++) {
+                    nameArr.push(searchResult[i]['title'][0]);
+                    imgArr.push(searchResult[i]['galleryURL'][0]);
+                    priceArr.push(
+                        searchResult[i]['sellingStatus']['0']['currentPrice']['0']['__value__'] * this.state.exchangeRate
+                    );
+                }
 
-				var nameArr 	= [];
-				var imgArr 	= [];
-				var priceArr 	= [];
+                this.setState({
+                    productname: nameArr,
+                    productimage: imgArr,
+                    productprice: priceArr
+                });
+            },
+            error: (xhr, stat, err) => {
+                console.error('Error: ', err);
+            }
+        });
+    };
 
-				var length = searchResult.length > 15 ? 15 : searchResult.length;
+    addToCart = (index) => {
+        const { productname, productimage, productprice, cart } = this.state;
+        const item = {
+            name: productname[index],
+            image: productimage[index],
+            price: productprice[index]
+        };
+        this.setState({ cart: [...cart, item] });
+    };
 
-				for( var i = 0; i < length; i++ ) {
-					var index = i.toString();
-					nameArr.push( searchResult[index]['title'][0] ); 
-					imgArr.push( searchResult[index]['galleryURL'][0] );
-					priceArr.push( 
-						searchResult[index]['sellingStatus']['0']['currentPrice']['0']['__value__'] * this.state.exchangeRate );
-				}
+    // Toggle the showCart state
+    toggleCart = () => {
+        this.setState((prevState) => ({ showCart: !prevState.showCart }));
+    };
 
-				this.setState({
-					productname: nameArr,
-					productimage: imgArr,
-					productprice: priceArr
-				});
-			},
-			error: (xhr, stat, err) => {
-				console.error('Error: ', err);			// Print the error if the api call failed
-			}
-		});
-	}
-	
-	//This Deals with displaying values,products and various other affects on the website.
-	render() {
+    render() {
+        const { productname, productimage, productprice, cart, showCart } = this.state;
 
-		return (
+        return (
+            <Authenticator formFields={formFields}>
+                <div className='catalog'>
+                    <h1>Driver Reward Catalog</h1>
+                    <p>Call your sponsor for more details at 1800-123-5555</p>
 
-      <Authenticator formFields={formFields}>
-			<div className='catalog'>
-			<h1>Driver Reward Catalog</h1>
-			<p>Call your sponsor for more details at 1800-123-5555</p>
+                    <input
+                        type="text"
+                        onChange={this.handleChange}
+                        onKeyDown={this.handleKeyPress}
+                    />
+                    <button type="button" onClick={this.handleSubmit}>Search</button>
 
-			<input 
-			   type="text" 
-			   onChange={this.handleChange}//If the User clicks the Search Button.
-			   onKeyDown={this.handleKeyPress}//If the user hits the enter button on there keyboard.
-			/>
-			<button type="button" onClick={this.handleSubmit}>Search</button>
+                    {/* Cart button to toggle the cart display */}
+                    <button type="button" onClick={this.toggleCart} className={`cart-icon ${showCart ? 'open' : ''}`}>
+			🛒{this.state.cart.length}
+		    </button>
 
-			<h2>Items</h2>
+                    {/* Conditionally render the Cart component */}
+                    {showCart && <Cart items={cart} />}
 
-			<div className="catalogGrid">
-			{this.state.productname.map((item, index) => (
-				<div className="catalogEntry" key={index}>
-					<img src={this.state.productimage[index]} />
-					<p>{item}</p>
-					<p>{this.state.productprice[index]} points</p>
-				</div>
-			))}
-			</div>
-
-			</div>
-      </Authenticator>
-		);
-	}
+                    <h2>Items</h2>
+                    <div className="catalogGrid">
+                        {productname.map((item, index) => (
+                            <div
+                                className="catalogEntry clickable"
+                                key={index}
+                                onClick={() => this.addToCart(index)}
+                            >
+                                <img src={productimage[index]} alt={item} />
+                                <p>{item}</p>
+                                <p>{productprice[index]} points</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </Authenticator>
+        );
+    }
 }
 
 const formFields = {

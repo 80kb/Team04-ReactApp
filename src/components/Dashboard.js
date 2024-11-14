@@ -126,7 +126,7 @@ const changeData = (e) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(applicationDataWithID)  // Send updated application data
+            body: JSON.stringify(applicationDataWithID)// Send updated application data
         });
 
         if (!response.ok) {
