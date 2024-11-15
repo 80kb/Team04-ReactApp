@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/Dashboard.css';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { getCurrentUser } from 'aws-amplify/auth';
@@ -25,15 +25,8 @@ const Dashboard = () => {
       fetchUserID();
     }, []);
 
-    //Fetch user data on entering the tab
-    useEffect(() => {
-      if(userID) {
-        fetchUserData();
-      }
-    }, [activeTab, userID]);
-
     // GET all user data
-    const fetchUserData = async () => {
+    const fetchUserData = useCallback(async () => {
       try {
         const response = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${userID}`);
         if (!response.ok) {
@@ -44,13 +37,20 @@ const Dashboard = () => {
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
-    };
+    }, [userID]);
 
     // Edit button clicks
     const handleEdit = () => {
       setIsEditing(true);
       setEditedData(userData);
     };
+
+    //Fetch user data on entering the tab
+    useEffect(() => {
+      if(userID) {
+        fetchUserData();
+      }
+    }, [activeTab, userID, fetchUserData]);
 
     // Handle input change in edit form
     const handleChange = (e) => {
