@@ -12,9 +12,7 @@ const LoginSignup = () => {
                 <div className="login-signup-container">
                     <p>Welcome, {user ? user.username : "please choose an option below:"}</p>
                     <div className="button-container">
-                        {user && (
-                            <button className="auth-button" onClick={signOut}>Sign Out</button>
-                        )}
+
                     </div>
                 </div>
             )}
