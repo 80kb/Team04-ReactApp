@@ -72,3 +72,38 @@
     object-fit: cover;
     border-radius: 5px;
 }
+
+/* Clear Cart button */
+.clearCartButton {
+    padding: 10px 20px;
+    border: 1px solid #ccc; /* Add a light gray border for the default look */
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: white; /* Default white background */
+    color: black; /* Default black text */
+    font-size: 1rem;
+    font-weight: 500; /* Slightly bolded text */
+    transition: background-color 0.3s ease, font-weight 0.3s ease;
+}
+
+.clearCartButton:hover {
+    background-color: #f0f0f0; /* Light gray background on hover */
+    font-weight: 600; /* Slightly bolder text on hover */
+}
+
+/* Checkout button */
+.checkoutButton {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #388e3c; 
+    color: white;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.checkoutButton:hover {
+    background-color: #2e7d32; 
+}
+

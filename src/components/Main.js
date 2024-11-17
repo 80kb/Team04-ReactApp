@@ -6,6 +6,7 @@ import Catalog from './Catalog';
 import Dashboard from './Dashboard';
 import Reports from './Reports';
 import LoginSignup from './LoginSignup';
+import Order from './Order';
 import '../styles/Main.css';
 
 //This is the Home Page on Our WebApp. Its being done in the Main file since its easier to coordinate.
@@ -24,6 +25,8 @@ const Main = () => (
             <Route exact path='/catalog' element={<Catalog />} />
             <Route exact path='/dashboard' element={<Dashboard />} />
             <Route exact path='/reports' element={<Reports />} />
+            <Route exact path='/order' element={<Order />} />
+	    
 			<Route exact path='/login-signup' element={<LoginSignup/>}></Route>
         </Routes>
     </div>
