@@ -20,6 +20,14 @@ class Catalog extends Component {
     }
 
     componentDidMount() {
+	const savedCart = localStorage.getItem('cart');
+
+	if (savedCart) {
+        this.setState({ cart: JSON.parse(savedCart) });
+        }
+
+
+
         $.ajax({
             url: 'https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/sponsorOrgs', 
             type: 'GET',
@@ -83,12 +91,23 @@ class Catalog extends Component {
             image: productimage[index],
             price: productprice[index]
         };
+	const updatedCart = [...cart, item];
         this.setState({ cart: [...cart, item] });
+
+
+	// Save the updated cart to localStorage, if you change tabs and come back to cart items will still exist.
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
     };
 
     // Toggle the showCart state
     toggleCart = () => {
         this.setState((prevState) => ({ showCart: !prevState.showCart }));
+    };
+
+    //Remove Items From Cart, (***think about doing selct certain items and clear***).
+    clearCart = () => {
+    this.setState({ cart: [] });
+    localStorage.removeItem('cart'); // Clear from localStorage
     };
 
     render() {
@@ -113,7 +132,11 @@ class Catalog extends Component {
 		    </button>
 
                     {/* Conditionally render the Cart component */}
-                    {showCart && <Cart items={cart} />}
+		    {/*{showCart && <Cart items={cart} />*/}
+
+		     {this.state.showCart && (
+    			<Cart items={this.state.cart} clearCart={this.clearCart} />
+		     )}
 
                     <h2>Items</h2>
                     <div className="catalogGrid">
