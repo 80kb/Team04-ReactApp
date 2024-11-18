@@ -9,8 +9,10 @@ const Cart = ({ items, clearCart }) => {
    const handleCheckout = () => {
         // Clear the cart and navigate to the orders page
         //clearCart();
-	 
-        navigate('/order');
+	
+
+
+        navigate('/order',{ state: { cartItems: items } });
     };
 
     return (
