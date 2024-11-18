@@ -1,7 +1,18 @@
-// Cart.js
+/* Cart.js */
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const Cart = ({ items, clearCart }) => {
+    
+   const navigate = useNavigate();
+   const handleCheckout = () => {
+        // Clear the cart and navigate to the orders page
+        //clearCart();
+	 
+        navigate('/order');
+    };
+
     return (
         <div className="cart">
             <h2>Cart</h2>
@@ -19,7 +30,9 @@ const Cart = ({ items, clearCart }) => {
                             </div>
                         ))}
                     </ul>
-                    <button onClick={clearCart}>Clear Cart</button>
+		      <button className="checkoutButton" onClick={handleCheckout}>Checkout</button>
+                      <button onClick={clearCart} className="clearCartButton">Clear Cart</button>
+                      
                 </>
             )}
         </div>
