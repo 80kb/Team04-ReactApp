@@ -5,12 +5,17 @@
 
 .orders h1 {
     font-size: 2rem;
-    color: #000000; /* Match the checkout button green */
+    color: #000000; /* Match the checkout button green? */
 }
 
 .orders p {
     font-size: 1.2rem;
     color: #555;
+}
+
+.order-page {
+    position: relative;
+    padding: 20px;
 }
 
 .order-container {
@@ -36,5 +41,88 @@
 .back-button:hover {
     background-color: #e0e0e0; /* Slightly darker gray */
     transform: scale(1.05); /* Subtle zoom effect */
+}
+
+.user-details-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.user-details-box p {
+    margin: 0; 
+    padding-right: 20px;
+    margin-bottom: 30px;
+}
+
+.user-details-box strong {
+    font-weight: bold;
+}
+
+/*Used for displaying the cart items on the Order Page*/
+.cart-summary {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.cart-items-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.cart-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.cart-item-details {
+    flex: 1;
+}
+
+.total-points {
+    margin-top: 15px;
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+    color: #388e3c;
+}
+
+/*Confrim Button in Order Page*/
+.confirm-purchase-button {
+    background-color: #28a745; /* Green color */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 50px; /* Makes the button round */
+    padding: 10px 20px; /* Adds space inside the button */
+    font-size: 16px; /* Adjusts text size */
+    cursor: pointer; /* Changes cursor on hover */
+    position: absolute; /* Allows positioning */
+    right: 20px; /* Pushes it to the right */
+    bottom: 20px; /* Places it near the bottom */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Adds a slight shadow for effect */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.confirm-purchase-button:hover {
+    background-color: #218838; /* Darker green on hover */
 }
 
