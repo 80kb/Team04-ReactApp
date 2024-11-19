@@ -174,6 +174,10 @@ const changeData = (e) => {
             </form>
           </div>
         );
+
+      case 'orderHistory':
+	return <h2>Order Histoy: [Place Holder for Order History]</h2>;
+
       default:
         return <h2>Select a Tab to View</h2>;
     }
@@ -192,6 +196,7 @@ const changeData = (e) => {
                         <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
                         <li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
 	    		<li onClick={() => setActiveTab('application')} className={activeTab === 'application' ? 'active' : ''}>Application</li>
+	    		<li onClick={() => setActiveTab('orderHistory')} className={activeTab === 'orderHistory' ? 'active' : ''}>Order History</li>
                     </ul>
                 </div>
                 <div className="content">
