@@ -142,7 +142,7 @@ const changeData = (e) => {
         alert('There was an error submitting the application.');
     }
   };
-
+  
 
   // Conditionally render content based on activeTab
   const renderContent = () => {
@@ -263,12 +263,31 @@ const changeData = (e) => {
             <div className="dashboard">
                 <div className="sidebar">
                     <h3>Dashboard</h3>
-                    <ul>
-                        <li onClick={() => setActiveTab('viewPoints')} className={activeTab === 'viewPoints' ? 'active' : ''}>View My Points</li>
-                        <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
-                        <li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
-	    		              <li onClick={() => setActiveTab('application')} className={activeTab === 'application' ? 'active' : ''}>Application</li>
-                    </ul>
+                    	{userData ? (
+                    	    <div>
+                    	    {userData.UserType == 'Driver' ? (
+                    	        <ul>
+                    	        <li onClick={() => setActiveTab('viewPoints')} className={activeTab === 'viewPoints' ? 'active' : ''}>View My Points</li>
+                        	<li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
+                        	<li onClick={() => setActiveTab('application')} className={activeTab === 'application' ? 'active' : ''}>Application</li>
+                    		</ul>
+                    	    ) : userData.UserType == 'Sponsor' ? (
+                    	        <ul>
+                    	        <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
+                        	<li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
+                    		</ul>
+                    	    ) : userData.UserType == 'Admin' ? (
+                    	        <ul>
+                    	        <li onClick={() => setActiveTab('viewPoints')} className={activeTab === 'viewPoints' ? 'active' : ''}>View My Points</li>
+                        	<li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
+                        	<li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
+                        	<li onClick={() => setActiveTab('application')} className={activeTab === 'application' ? 'active' : ''}>Application</li>
+                    		</ul>
+                    	    ) : (<p> ERROR </p>)}
+                    	    </div>
+                    	) : (
+                    	    <p> ERROR </p>
+                    	)}
                 </div>
                 <div className="content">
                     {renderContent()}
