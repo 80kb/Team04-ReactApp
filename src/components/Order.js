@@ -4,8 +4,90 @@ import { getCurrentUser } from 'aws-amplify/auth';
 import '../styles/Order.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+/*Whats needed in the Order Table
+ * OrderID (Number)
+ * Items (Just Name)
+ * Order_Date
+ * Order_Notifications
+ * Order_Price(points)
+ * Order_Status
+ * UserID
+ */
+
+/* const [] = useState({
+ * OrderID: 0,
+ * Items: '',
+ * Order_Date: new Date().toLocaleDateString(),
+ * Order_Notification 'Received',
+ * Order_Price: 0,
+ * Order_Status: Ordered (Not Shipped),
+ * UserID: '',
+ * });
+ */
+
+ /*  const generateUniqueID = () => Date.now(); How about UserID */
+
+ /* What will send the info to database.
+  *const submitApplication = async (event) => {
+    event.preventDefault(); // Prevent form reload
+
+    // Generate a unique ID for the application
+    const uniqueID = generateUniqueID();
+    const applicationDataWithID = {
+        ...applicationData,
+        applicationID: uniqueID
+    };
+
+    try {
+        const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(applicationDataWithID)// Send updated application data
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to submit application');
+        }
+
+        const result = await response.json();
+        console.log('Application submitted successfully:', result);  // Message from Lambda response
+        alert('Application submitted successfully!');
+
+    } catch (error) {
+        console.error('Error submitting application:', error);
+        alert('There was an error submitting the application.');
+    }
+  };
+
+  */
+
+
+   /* UserId is Not a Number.
+    	<div>
+            <h1>User Information</h1>
+            {userID ? (
+                <p>User ID: {userID}</p>
+            ) : (
+                <p>Loading user ID...</p>
+            )}
+        </div>
+
+    
+    */ 
+
 const Order = () => {
-/* ****  START FROM STEP 2, GEtting the Correct Route in Main.js   */
+
+ const [orderData,setOrderData] = useState({
+ 	OrderID: 0,
+ 	Items: [],
+ 	Order_Date: new Date().toLocaleDateString(),
+ 	Order_Notifications: 'Received',
+ 	Order_Price: 0,
+ 	Order_Status: 'Ordered (Not Shipped)',
+ 	UserID: '',
+ });
 
     /*Based off Example From Dashboard.js(Getting infromation from the database)*/
     const [userData, setUserData] = useState(null);
@@ -29,6 +111,11 @@ const Order = () => {
             try {
                 const user = await getCurrentUser(); // Assuming you have this function
                 setUserID(user.username);
+		//Automatically Sets userID in Order Data.
+		setOrderData((prevData) => ({
+                    ...prevData,
+                    UserID: user.username,
+		}));
             } catch (error) {
                 console.error('Error fetching user ID:', error);
             }
@@ -56,6 +143,54 @@ const Order = () => {
             console.error('Error fetching user data:', error);
         }
     };
+
+	const generateUniqueID = () => Date.now() + 20;
+
+	const submitOrder = async () => {
+        const totalCost = cartItems.reduce((total, item) => total + item.price, 0);
+
+        const itemsList = cartItems.map((item) => item.name);
+
+	  const updatedOrderData = {
+            ...orderData,
+            OrderID: generateUniqueID(),
+            Items: itemsList,
+            Order_Price: totalCost,
+	    Order_Date: new Date().toLocaleDateString(),
+        };
+
+	//console.log('Submitting Order Data:', updatedOrderData);
+	
+	try {
+	    const response = await fetch(
+                'https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/orders',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedOrderData),
+                }
+            );
+
+	    if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('Error from server:', errorResponse);
+                throw new Error('Failed to submit order');
+            }
+
+	    const result = await response.json();
+            console.log('Order submitted successfully:', result);
+            alert('Order submitted successfully!');
+            localStorage.removeItem('cart'); // Clear the cart
+            navigate('/catalog');
+
+        } catch (error) {
+            console.error('Error submitting order:', error);
+            alert('There was an error submitting the order.');
+        }
+    };
+
 
 	return (
 	   <div className="order-page">
@@ -100,6 +235,7 @@ const Order = () => {
 		   <p>Loading user data...</p>
 		)}
 
+
 	{/*For Confrim Pruchase button, see if they Can even Purchase the Products.*/}
         {cartItems.length > 0 && userData && (
             <div className="confirm-purchase">
@@ -108,10 +244,7 @@ const Order = () => {
                     onClick={() => {
                         const totalCost = cartItems.reduce((total, item) => total + item.price, 0);
                         if (userData.Points >= totalCost) {
-                            alert('Purchase confirmed! Thank you for your order.');
-                            // Clear the cart from localStorage
-                            localStorage.removeItem('cart');
-                            navigate('/catalog'); // Redirect to catalog after purchase
+                            submitOrder();
                         } else {
                             alert('Insufficient points to complete this purchase.');
                         }

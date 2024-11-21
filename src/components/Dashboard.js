@@ -8,6 +8,7 @@ const Dashboard = () => {
     const [activeTab, setActiveTab] = useState(null);
     const [userData, setUserData] = useState(null);
     const [userID, setUserID] = useState(null);
+    //const [orders, setOrders] = useState([]);
 
     // Fetch user ID on entering the tab
     useEffect(() => {
@@ -22,6 +23,14 @@ const Dashboard = () => {
 
       fetchUserID();
     }, []);
+
+
+    /* /When the user is on the Order History Tab. (Continue) from Here).
+    useEffect(() => {
+        if (activeTab === 'orderHistory' && userID) {
+            fetchUserOrders();
+        }
+    }, [activeTab, userID]);*/	
 
     //Fetch user data on entering the tab
     useEffect(() => {
@@ -44,6 +53,7 @@ const Dashboard = () => {
       }
     };
 
+    //Setting Up Default Values for Application.	
     const [applicationData, setApplicationData] = useState({
   	applicationID: 0,
   	applicationStatus: 'Processing',
