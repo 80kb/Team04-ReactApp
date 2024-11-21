@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 
+//
+
 class About extends Component {
 
 	// Initializes the state to default values.
