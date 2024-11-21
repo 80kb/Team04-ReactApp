@@ -706,13 +706,13 @@ const Dashboard = () => {
 				<li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
 				<li onClick={() => setActiveTab('application')} className={activeTab === 'application' ? 'active' : ''}>Application</li>
 				<li onClick={() => setActiveTab('orderHistory')} className={activeTab === 'orderHistory' ? 'active' : ''}>Order History</li>
-				<li onClick={() => setActiveTab('updateExchangeRate')} className={activeTab === 'updateExchangeRate' ? 'active' : ''}>Exchange Rate</li>
 				</ul>
 			) : userData.UserType === 'Sponsor' ? (
 				<ul>
 				<li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
 				<li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
 				<li onClick={() => setActiveTab('CreateSponsorAccount')} className={activeTab === 'CreateSponsorAccount' ? 'active' : ''}>Create Sponsor Account</li>
+				<li onClick={() => setActiveTab('updateExchangeRate')} className={activeTab === 'updateExchangeRate' ? 'active' : ''}>Exchange Rate</li>
 				</ul>
 			) : userData.UserType === 'Admin' ? (
 				<ul>
