@@ -32,7 +32,7 @@ const Dashboard = () => {
     
       try {
         await signUp({
-          username: newUser.username,
+          username: newUser.email,
           password: newUser.password,
           attributes: {
             email: newUser.email,
