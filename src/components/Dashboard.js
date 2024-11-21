@@ -9,8 +9,10 @@ const Dashboard = () => {
     const [activeTab, setActiveTab] = useState(null);
     const [userData, setUserData] = useState(null);
     const [userID, setUserID] = useState(null);
+
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
+
     const [newUser, setNewUser] = useState({
       firstName: '',
       lastName: '',
@@ -114,6 +116,13 @@ const Dashboard = () => {
 
       fetchUserID();
     }, []);
+	
+    //Fetch user data on entering the tab
+    useEffect(() => {
+      if(activeTab === 'accountDetails' || activeTab === 'viewPoints' && userID) {
+        fetchUserData();
+      }
+    }, [activeTab, userID]);
 
     // GET all user data
     const fetchUserData = useCallback(async () => {
@@ -180,6 +189,7 @@ const Dashboard = () => {
       }
     };
 
+    //Setting Up Default Values for Application.	
     const [applicationData, setApplicationData] = useState({
   	applicationID: 0,
   	applicationStatus: 'Processing',
