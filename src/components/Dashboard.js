@@ -4,6 +4,7 @@ import { Authenticator } from '@aws-amplify/ui-react';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { signUp } from 'aws-amplify/auth';
 
+//
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState(null);
