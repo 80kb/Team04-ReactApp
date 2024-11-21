@@ -9,6 +9,7 @@ const Dashboard = () => {
     const [activeTab, setActiveTab] = useState(null);
     const [userData, setUserData] = useState(null);
     const [userID, setUserID] = useState(null);
+    const [orders, setOrders] = useState([]);
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
@@ -90,7 +91,7 @@ const Dashboard = () => {
         setNewUser({
           firstName: '',
           lastName: '',
-          email: '',
+          email: '', 
           address: '',
           password: '',
           birthdate: '',
@@ -117,6 +118,61 @@ const Dashboard = () => {
       fetchUserID();
     }, []);
 	
+    // Fetch user orders when the 'orderHistory' tab is active
+    useEffect(() => {
+        if (activeTab === 'orderHistory' && userID) {
+            fetchUserOrders();
+        }
+    }, [activeTab, userID]);
+
+
+    //Getting all orders for a user, at first will get all orders in DB but then filter by UIDfor Users Orders.
+    const fetchUserOrders = async () => {
+        try {
+            const response = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/orders/user/${userID}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch orders');
+            }
+            const result = await response.json();
+		
+	    console.log('Fetched orders:', result);
+            // Filter orders by userID
+            //const userOrders = result.Items.filter((order) => order.userid === "94c884c8-a011-70b1-e30c-37a0ab7d8233");
+
+            setOrders(result.Items);
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        }
+    };
+
+   //Responsible for displaying orders
+   const renderOrderHistory = () => {
+        if (orders.length === 0) {
+            return <p>No orders found for your account.</p>;
+        }
+
+	return (
+            <div>
+                <h2>Your Order History</h2>
+                <ul className="order-list">
+                    {orders.map((order) => (
+                        <li key={order.orderid} className="order-item">
+                            <h4>Order ID: {order.orderid}</h4>
+                            <p>Date: {order.orderdate}</p>
+                            <p>Status: {order.orderstatus}</p>
+                            <p>Total Points: {order.orderprice}</p>
+                            <ul>
+                                {order.items.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                ))}
+                            </ul>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+    };
+
     //Fetch user data on entering the tab
     useEffect(() => {
       if(activeTab === 'accountDetails' || activeTab === 'viewPoints' && userID) {
@@ -351,8 +407,25 @@ const changeData = (e) => {
         );
 
       case 'orderHistory':
-	      return <h2>Order Histoy: [Place Holder for Order History]</h2>;
-
+	      return (<div className="order-history-container">
+                    <h2>Order History</h2>
+                    {orders.length > 0 ? (
+                        <ul>
+                            {orders.map((order, index) => (
+                                <div key={index} className="order-item">
+                                    <p><strong>Order ID:</strong> {order.OrderID}</p>
+                                    <p><strong>Status:</strong> {order.Order_Status}</p>
+                                    <p><strong>Price:</strong> {order.Order_Price}</p>
+                                    <p><strong>Order Date:</strong> {order.Order_Date}</p>
+                                    <hr />
+                                </div>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No orders found.</p>
+                    )}
+                </div>
+	    );
       case 'CreateSponsorAccount':
         return (
           <div>

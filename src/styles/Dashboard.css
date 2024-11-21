@@ -43,3 +43,28 @@
     font-weight: bold;
     color: #007bff; /* Change color for the active tab */
 }
+
+/*For order History Tab */
+.order-history-container {
+    max-height: 400px; /* Adjust based on your layout */
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.order-item {
+    margin-bottom: 15px; /* Space between each order */
+    padding: 10px;
+    border-bottom: 1px solid #ddd; /* Divider between orders */
+    display: flex;
+    flex-direction: column;
+}
+
+.order-item p {
+    margin: 5px 0; /* Space between paragraphs */
+    word-wrap: break-word; /* Breaks long words to fit within the container */
+    margin: 5px 0;
+}
+
+
