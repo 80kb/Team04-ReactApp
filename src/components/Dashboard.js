@@ -2,18 +2,106 @@ import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/Dashboard.css';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { getCurrentUser } from 'aws-amplify/auth';
+import { signUp } from 'aws-amplify/auth';
 
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState(null);
     const [userData, setUserData] = useState(null);
     const [userID, setUserID] = useState(null);
-<<<<<<< HEAD
-    //const [orders, setOrders] = useState([]);
-=======
+
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
->>>>>>> 8543e10e0717f55eff21e77644fd818cafb0b6c9
+
+    const [newUser, setNewUser] = useState({
+      firstName: '',
+      lastName: '',
+      email: '',
+      address: '',
+      phoneNumber: '',
+      birthdate: '',
+      password: '',
+      username: ''
+    });
+
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setNewUser((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleCreateSponsorUser = async (e) => {
+      e.preventDefault();
+    
+      try {
+        await signUp({
+          username: newUser.email,
+          password: newUser.password,
+          attributes: {
+            email: newUser.email,
+            given_name: newUser.firstName,
+            family_name: newUser.lastName,
+            address: newUser.address,
+            birthdate: newUser.birthdate,
+            phone_number: newUser.phoneNumber,
+            preferred_username: newUser.username
+          },
+        });
+
+        // Create PATCH call to Dynamo table: Users to edit the UserType field to 'Sponsor'
+    
+        alert('User account created successfully!');
+        setNewUser({
+          firstName: '',
+          lastName: '',
+          email: '',
+          address: '',
+          password: '',
+          birthdate: '',
+          phoneNumber: '',
+          username: ''
+        });
+      } catch (error) {
+        console.error('Error creating user:', error);
+        alert(`Failed to create user: ${error.message}`);
+      }
+    };
+
+    const handleCreateAdminUser = async (e) => {
+      e.preventDefault();
+    
+      try {
+        await signUp({
+          username: newUser.username,
+          password: newUser.password,
+          attributes: {
+            email: newUser.email,
+            given_name: newUser.firstName,
+            family_name: newUser.lastName,
+            address: newUser.address,
+            birthdate: newUser.birthdate,
+            phone_number: newUser.phoneNumber,
+            preferred_username: newUser.username
+          },
+        });
+
+        // Create PATCH call to Dynamo table: Users to edit the UserType field to 'Admin'
+    
+        alert('User account created successfully!');
+        setNewUser({
+          firstName: '',
+          lastName: '',
+          email: '',
+          address: '',
+          password: '',
+          birthdate: '',
+          phoneNumber: '',
+          username: ''
+        });
+      } catch (error) {
+        console.error('Error creating user:', error);
+        alert(`Failed to create user: ${error.message}`);
+      }
+    };
 
     // Fetch user ID on entering the tab
     useEffect(() => {
@@ -28,16 +116,7 @@ const Dashboard = () => {
 
       fetchUserID();
     }, []);
-
-<<<<<<< HEAD
-
-    /* /When the user is on the Order History Tab. (Continue) from Here).
-    useEffect(() => {
-        if (activeTab === 'orderHistory' && userID) {
-            fetchUserOrders();
-        }
-    }, [activeTab, userID]);*/	
-
+	
     //Fetch user data on entering the tab
     useEffect(() => {
       if(activeTab === 'accountDetails' || activeTab === 'viewPoints' && userID) {
@@ -45,8 +124,6 @@ const Dashboard = () => {
       }
     }, [activeTab, userID]);
 
-=======
->>>>>>> 8543e10e0717f55eff21e77644fd818cafb0b6c9
     // GET all user data
     const fetchUserData = useCallback(async () => {
       try {
@@ -165,7 +242,7 @@ const changeData = (e) => {
         alert('There was an error submitting the application.');
     }
   };
-
+  
 
   // Conditionally render content based on activeTab
   const renderContent = () => {
@@ -193,22 +270,22 @@ const changeData = (e) => {
                           First Name:
                           <input type="text" name="FirstName" value={editedData.FirstName || ''} onChange={handleChange} />
                       </label>
+                      <br/>
                       <label>
                           Last Name:
                           <input type="text" name="LastName" value={editedData.LastName || ''} onChange={handleChange} />
                       </label>
-                      <label>
-                          Email:
-                          <input type="email" name="Email" value={editedData.Email || ''} onChange={handleChange} />
-                      </label>
+                      <br/>
                       <label>
                           Phone Number:
                           <input type="tel" name="PhoneNumber" value={editedData.PhoneNumber || ''} onChange={handleChange} />
                       </label>
+                      <br/>
                       <label>
                           Address:
                           <input type="text" name="Address" value={editedData.Address || ''} onChange={handleChange} />
                       </label>
+                      <br/>
                       <button onClick={submitEdits}>Save Changes</button>
                       <button onClick={() => setIsEditing(false)}>Cancel</button>
                   </div>
@@ -253,7 +330,6 @@ const changeData = (e) => {
                   />
                 </label>
               </div>
-
               <div>
                 <label>
                   Sponsor Org:
@@ -275,7 +351,203 @@ const changeData = (e) => {
         );
 
       case 'orderHistory':
-	return <h2>Order Histoy: [Place Holder for Order History]</h2>;
+	      return <h2>Order Histoy: [Place Holder for Order History]</h2>;
+
+      case 'CreateSponsorAccount':
+        return (
+          <div>
+            <h2>Create Sponsor Account</h2>
+            <form onSubmit={handleCreateSponsorUser}>
+              <label>
+                First Name:
+                <input
+                  type="text"
+                  name="firstName"
+                  value={newUser.firstName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br/>
+              <label>
+                Last Name:
+                <input
+                  type="text"
+                  name="lastName"
+                  value={newUser.lastName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br/>
+              <label>
+                Email:
+                <input
+                  type="email"
+                  name="email"
+                  value={newUser.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br/>
+              <label>
+                Address:
+                <input
+                  type="text"
+                  name="address"
+                  value={newUser.address}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br />
+              <label>
+                Birthdate:
+                <input
+                  type="Date"
+                  name="birthdate"
+                  value={newUser.birthdate}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br />
+              <label>
+                Phone Number:
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={newUser.phoneNumber}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br />
+              <label>
+                Username:
+                <input
+                  type="text"
+                  name="username"
+                  value={newUser.username}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br />
+              <label>
+                Password:
+                <input
+                  type="password"
+                  name="password"
+                  value={newUser.password}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br/>
+              <button type="submit">Create Account</button>
+            </form>
+          </div>
+        );
+
+        case 'CreateAdminAccount':
+        return (
+          <div>
+            <h2>Create Admin Account</h2>
+            <form onSubmit={handleCreateAdminUser}>
+              <label>
+                First Name:
+                <input
+                  type="text"
+                  name="firstName"
+                  value={newUser.firstName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br/>
+              <label>
+                Last Name:
+                <input
+                  type="text"
+                  name="lastName"
+                  value={newUser.lastName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br/>
+              <label>
+                Email:
+                <input
+                  type="email"
+                  name="email"
+                  value={newUser.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br/>
+              <label>
+                Address:
+                <input
+                  type="text"
+                  name="address"
+                  value={newUser.address}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br />
+              <label>
+                Birthdate:
+                <input
+                  type="Date"
+                  name="birthdate"
+                  value={newUser.birthdate}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br />
+              <label>
+                Phone Number:
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={newUser.phoneNumber}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br />
+              <label>
+                Username:
+                <input
+                  type="text"
+                  name="username"
+                  value={newUser.username}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br />
+              <label>
+                Password:
+                <input
+                  type="password"
+                  name="password"
+                  value={newUser.password}
+                  onChange={handleInputChange}
+                  required
+                />
+              </label>
+              <br/>
+              <button type="submit">Create Account</button>
+            </form>
+          </div>
+        );
 
       default:
         return <h2>Select a Tab to View</h2>;
@@ -290,14 +562,32 @@ const changeData = (e) => {
             <div className="dashboard">
                 <div className="sidebar">
                     <h3>Dashboard</h3>
-                    <ul>
-                        <li onClick={() => setActiveTab('viewPoints')} className={activeTab === 'viewPoints' ? 'active' : ''}>View My Points</li>
-                        <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
-                        <li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
-
-	    		              <li onClick={() => setActiveTab('application')} className={activeTab === 'application' ? 'active' : ''}>Application</li>
-	    		              <li onClick={() => setActiveTab('orderHistory')} className={activeTab === 'orderHistory' ? 'active' : ''}>Order History</li>
-                    </ul>
+                    	{userData ? (
+                    	    <div>
+                    	    {userData.UserType === 'Driver' ? (
+                    	        <ul>
+                    	        <li onClick={() => setActiveTab('viewPoints')} className={activeTab === 'viewPoints' ? 'active' : ''}>View My Points</li>
+                        	    <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
+                        	    <li onClick={() => setActiveTab('application')} className={activeTab === 'application' ? 'active' : ''}>Application</li>
+	    		                    <li onClick={() => setActiveTab('orderHistory')} className={activeTab === 'orderHistory' ? 'active' : ''}>Order History</li>
+                    		</ul>
+                    	    ) : userData.UserType === 'Sponsor' ? (
+                    	        <ul>
+                    	        <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
+                        	    <li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
+                              <li onClick={() => setActiveTab('CreateSponsorAccount')} className={activeTab === 'CreateSponsorAccount' ? 'active' : ''}>Create Sponsor Account</li>
+                    		</ul>
+                    	    ) : userData.UserType === 'Admin' ? (
+                    	        <ul>
+                              <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
+                              <li onClick={() => setActiveTab('CreateSponsorAccount')} className={activeTab === 'CreateSponsorAccount' ? 'active' : ''}>Create Sponsor Account</li>
+                              <li onClick={() => setActiveTab('CreateAdminAccount')} className={activeTab === 'CreateAdminAccount' ? 'active' : ''}>Create Admin Account</li>
+                    		</ul>
+                    	    ) : (<p> ERROR </p>)}
+                    	    </div>
+                    	) : (
+                    	    <p> ERROR </p>
+                    	)}
                 </div>
                 <div className="content">
                     {renderContent()}
