@@ -137,7 +137,6 @@ const Dashboard = () => {
 		
 	    console.log('Fetched orders:', result);
             // Filter orders by userID
-            //const userOrders = result.Items.filter((order) => order.userid === "94c884c8-a011-70b1-e30c-37a0ab7d8233");
 
             setOrders(result.Items);
         } catch (error) {
@@ -158,7 +157,8 @@ const Dashboard = () => {
                     {orders.map((order) => (
                         <li key={order.orderid} className="order-item">
                             <h4>Order ID: {order.orderid}</h4>
-                            <p>Date: {order.orderdate}</p>
+                            //<p>Product: {order.Items}</p> Array Problem?
+			    <p>Date: {order.orderdate}</p>
                             <p>Status: {order.orderstatus}</p>
                             <p>Total Points: {order.orderprice}</p>
                             <ul>
