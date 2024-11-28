@@ -4,79 +4,6 @@ import { getCurrentUser } from 'aws-amplify/auth';
 import '../styles/Order.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-/*Whats needed in the Order Table
- * OrderID (Number)
- * Items (Just Name)
- * Order_Date
- * Order_Notifications
- * Order_Price(points)
- * Order_Status
- * UserID
- */
-
-/* const [] = useState({
- * OrderID: 0,
- * Items: '',
- * Order_Date: new Date().toLocaleDateString(),
- * Order_Notification 'Received',
- * Order_Price: 0,
- * Order_Status: Ordered (Not Shipped),
- * UserID: '',
- * });
- */
-
- /*  const generateUniqueID = () => Date.now(); How about UserID */
-
- /* What will send the info to database.
-  *const submitApplication = async (event) => {
-    event.preventDefault(); // Prevent form reload
-
-    // Generate a unique ID for the application
-    const uniqueID = generateUniqueID();
-    const applicationDataWithID = {
-        ...applicationData,
-        applicationID: uniqueID
-    };
-
-    try {
-        const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/orders', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(applicationDataWithID)// Send updated application data
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to submit application');
-        }
-
-        const result = await response.json();
-        console.log('Application submitted successfully:', result);  // Message from Lambda response
-        alert('Application submitted successfully!');
-
-    } catch (error) {
-        console.error('Error submitting application:', error);
-        alert('There was an error submitting the application.');
-    }
-  };
-
-  */
-
-
-   /* UserId is Not a Number.
-    	<div>
-            <h1>User Information</h1>
-            {userID ? (
-                <p>User ID: {userID}</p>
-            ) : (
-                <p>Loading user ID...</p>
-            )}
-        </div>
-
-    
-    */ 
-
 const Order = () => {
 
  const [orderData,setOrderData] = useState({
@@ -146,7 +73,9 @@ const Order = () => {
 
 	const generateUniqueID = () => Date.now() + 20;
 
+	//Important Function, after hitting the submit button, sends order to database.
 	const submitOrder = async () => {
+
         const totalCost = cartItems.reduce((total, item) => total + item.price, 0);
 
         const itemsList = cartItems.map((item) => item.name);
@@ -181,6 +110,35 @@ const Order = () => {
 
 	    const result = await response.json();
             console.log('Order submitted successfully:', result);
+
+	    /*const updatedPoints = userData.Points - totalCost;
+
+	    const updatedUserData = {
+            ...userData, // Start with the current user data
+            Points: updatedPoints, // Subtract points
+            };
+		
+	    console.log('Updating user data:', updatedUserData);
+	    const pointsResponse = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${userID}`,
+            {
+                method: 'PATCH', // Use PATCH to partially update the user's data
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedUserData),
+            }
+        );
+
+	if (!pointsResponse.ok) {
+            const errorResponse = await pointsResponse.json();
+            console.error('Error updating user points:', errorResponse);
+            throw new Error('Failed to update user points');
+        }
+
+	setUserData(updatedUserData);*/
+	//const pointsResult = await pointsResponse.json();
+        //console.log('User points updated successfully:', pointsResult);
+
             alert('Order submitted successfully!');
             localStorage.removeItem('cart'); // Clear the cart
             navigate('/catalog');

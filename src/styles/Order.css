@@ -125,4 +125,13 @@
 .confirm-purchase-button:hover {
     background-color: #218838; /* Darker green on hover */
 }
-
+/* Order History Title*/
+.order-history-header {
+    position: sticky; /* Keeps the header in place */
+    top: 0; /* Align it to the top */
+    background-color: white; /* Ensure it has a background to cover content underneath */
+    z-index: 10; /* Ensure it stays above the scrollable content */
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}

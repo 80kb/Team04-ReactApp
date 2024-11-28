@@ -145,33 +145,46 @@ const Dashboard = () => {
     };
 
    //Responsible for displaying orders
-   const renderOrderHistory = () => {
-        if (orders.length === 0) {
-            return <p>No orders found for your account.</p>;
-        }
+    const renderOrderHistory = () => {
+    return (
+	<div>
+	<h2 className="order-history-header">Order History</h2>
+        <div className="order-history-container">
+            {orders.length > 0 ? (
+                <ul>
+                    {orders.map((order, index) => {
+                        // Console log the items for debugging
+                        console.log('Order Items:', order.Items);
 
-	return (
-            <div>
-                <h2>Your Order History</h2>
-                <ul className="order-list">
-                    {orders.map((order) => (
-                        <li key={order.orderid} className="order-item">
-                            <h4>Order ID: {order.orderid}</h4>
-                            //<p>Product: {order.Items}</p> Array Problem?
-			    <p>Date: {order.orderdate}</p>
-                            <p>Status: {order.orderstatus}</p>
-                            <p>Total Points: {order.orderprice}</p>
-                            <ul>
-                                {order.items.map((item, index) => (
-                                    <li key={index}>{item}</li>
-                                ))}
-                            </ul>
-                        </li>
-                    ))}
+                        return (
+                            <div key={index} className="order-item">
+                                <p><strong>Order ID:</strong> {order.OrderID}</p>
+                                <p><strong>Status:</strong> {order.Order_Status}</p>
+                                <p><strong>Price:</strong> {order.Order_Price}</p>
+                                <p><strong>Order Date:</strong> {order.Order_Date}</p>
+                                <p><strong>Items:</strong></p>
+                                <ul>
+                                    {order.Items.map((item, itemIndex) => (
+                                        <li key={itemIndex}>
+                                            {typeof item === 'string' ? item : item.S}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        );
+                    })}
                 </ul>
-            </div>
-        );
-    };
+            ) : (
+                <p>No orders found.</p>
+            )}
+        </div>
+       </div>
+    );
+};
+
+
+
+
 
     //Fetch user data on entering the tab
     useEffect(() => {
@@ -407,25 +420,8 @@ const changeData = (e) => {
         );
 
       case 'orderHistory':
-	      return (<div className="order-history-container">
-                    <h2>Order History</h2>
-                    {orders.length > 0 ? (
-                        <ul>
-                            {orders.map((order, index) => (
-                                <div key={index} className="order-item">
-                                    <p><strong>Order ID:</strong> {order.OrderID}</p>
-                                    <p><strong>Status:</strong> {order.Order_Status}</p>
-                                    <p><strong>Price:</strong> {order.Order_Price}</p>
-                                    <p><strong>Order Date:</strong> {order.Order_Date}</p>
-                                    <hr />
-                                </div>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>No orders found.</p>
-                    )}
-                </div>
-	    );
+	      return renderOrderHistory();
+
       case 'CreateSponsorAccount':
         return (
           <div>
