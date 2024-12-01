@@ -382,6 +382,9 @@ const changeData = (e) => {
       );
       case 'rewards':
         return <h2>Rewards: [Placeholder for Rewards]</h2>;
+	
+      case 'reports':
+	return <h2>Reports Page: [Responsible for generating reports]</h2>
       case 'application':
         return (
           <div>
@@ -652,6 +655,7 @@ const changeData = (e) => {
                               <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
                               <li onClick={() => setActiveTab('CreateSponsorAccount')} className={activeTab === 'CreateSponsorAccount' ? 'active' : ''}>Create Sponsor Account</li>
                               <li onClick={() => setActiveTab('CreateAdminAccount')} className={activeTab === 'CreateAdminAccount' ? 'active' : ''}>Create Admin Account</li>
+                              <li onClick={() => setActiveTab('reports')} className={activeTab === 'reports' ? 'active' : ''}>Produce Reports</li>
                     		</ul>
                     	    ) : (<p> ERROR </p>)}
                     	    </div>
