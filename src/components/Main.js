@@ -12,10 +12,25 @@ import '../styles/Main.css';
 //This is the Home Page on Our WebApp. Its being done in the Main file since its easier to coordinate.
 const Home = () => (
     <div className='home'>
-        <h1>Welcome to Driver Rewards (TM)!</h1>
-        <p>Under Construction</p>
+        <header className="hero-section">
+            <h1>Welcome to Driver Rewards (TM)!</h1>
+            <p>
+                Driver Rewards (TM) is a platform dedicated to recognizing and rewarding drivers for their hard work, dedication, and exceptional performance. Our mission is to provide a meaningful incentive system that encourages safe driving practices and celebrates milestones.
+            </p>
+        </header>
+        <section className="benefits-section">
+            <h2>Key Benefits</h2>
+            <ul>
+                <li>Encourages safe and efficient driving habits.</li>
+                <li>Motivates drivers to achieve their best performance.</li>
+            </ul>
+        </section>
+        <footer className="footer-section">
+            <p>&copy; 2024 Driver Rewards (TM). All Rights Reserved.</p>
+        </footer>
     </div>
 );
+
 //These are our paths for the Webapp, on the site when you click one of the tabs, this will help you Access the correct info. for the page.
 const Main = () => (
     <div className="main-container"> 
