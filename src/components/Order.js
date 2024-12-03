@@ -89,7 +89,8 @@ const Order = () => {
         };
 
 	//console.log('Submitting Order Data:', updatedOrderData);
-	
+
+
 	try {
 	    const response = await fetch(
                 'https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/orders',
@@ -111,21 +112,17 @@ const Order = () => {
 	    const result = await response.json();
             console.log('Order submitted successfully:', result);
 
-	    /*const updatedPoints = userData.Points - totalCost;
+	    const updatedPoints = userData.Points - totalCost;
 
-	    const updatedUserData = {
-            ...userData, // Start with the current user data
-            Points: updatedPoints, // Subtract points
-            };
-		
-	    console.log('Updating user data:', updatedUserData);
+	 
+	//Don't send everything, just do points	
 	    const pointsResponse = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${userID}`,
             {
                 method: 'PATCH', // Use PATCH to partially update the user's data
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(updatedUserData),
+		    body: JSON.stringify({"Points": updatedPoints}),
             }
         );
 
@@ -135,7 +132,6 @@ const Order = () => {
             throw new Error('Failed to update user points');
         }
 
-	setUserData(updatedUserData);*/
 	//const pointsResult = await pointsResponse.json();
         //console.log('User points updated successfully:', pointsResult);
 
