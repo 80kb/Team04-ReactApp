@@ -11,6 +11,7 @@ const Dashboard = () => {
     const [userData, setUserData] = useState(null);
     const [userID, setUserID] = useState(null);
     const [orders, setOrders] = useState([]);
+    const [selectedOption, setSelectedOption] = useState('');//Used For Reports Selection
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
@@ -183,7 +184,32 @@ const Dashboard = () => {
     );
 };
 
+const ReportMenuChoice = () => {
+        const handleOptionChange = (event) => {
+            setSelectedOption(event.target.value);
+        };
 
+        return (
+            <div style={{ marginBottom: '20px' }}>
+                <label htmlFor="dropdown">Choose a Report: </label>
+                <select
+                    id="dropdown"
+                    value={selectedOption}
+                    onChange={handleOptionChange}
+                    style={{
+                        padding: '8px',
+                        fontSize: '16px',
+                        borderRadius: '4px',
+                        border: '1px solid #ccc',
+                    }}
+                >
+                    <option value="">-- Select a Report --</option>
+                    <option value="Report1">Report 1</option>
+                    <option value="Report2">Report 2</option>
+                </select>
+            </div>
+        );
+    };
 
 
 
@@ -382,9 +408,8 @@ const changeData = (e) => {
       );
       case 'rewards':
         return <h2>Rewards: [Placeholder for Rewards]</h2>;
-	
       case 'reports':
-	return <h2>Reports Page: [Responsible for generating reports]</h2>
+	return ReportMenuChoice();
       case 'application':
         return (
           <div>
