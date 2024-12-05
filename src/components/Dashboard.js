@@ -3,14 +3,10 @@ import '../styles/Dashboard.css';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { signUp } from 'aws-amplify/auth';
-<<<<<<< HEAD
 import { jsPDF } from 'jspdf';
 import "jspdf-autotable";
-
-//
-=======
 import { updateUserAttributes } from '@aws-amplify/auth';
->>>>>>> main
+
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState(null);
@@ -18,11 +14,8 @@ const Dashboard = () => {
     const [userID, setUserID] = useState(null);
     const [orders, setOrders] = useState([]);
     const [selectedOption, setSelectedOption] = useState('');//Used For Reports Selection
-<<<<<<< HEAD
     const [pdfUrl, setPdfUrl] = useState("");//Used for Displaying pdf.
-=======
     const [sponsorOrganizations, setSponsorOrganizations] = useState([]);
->>>>>>> main
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
