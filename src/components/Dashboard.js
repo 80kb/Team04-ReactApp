@@ -3,8 +3,7 @@ import '../styles/Dashboard.css';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { signUp } from 'aws-amplify/auth';
-
-//
+import { updateUserAttributes } from '@aws-amplify/auth';
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState(null);
@@ -211,8 +210,6 @@ const ReportMenuChoice = () => {
         );
     };
 
-
-
     //Fetch user data on entering the tab
     useEffect(() => {
       if(activeTab === 'accountDetails' || activeTab === 'viewPoints' && userID) {
@@ -260,15 +257,24 @@ const ReportMenuChoice = () => {
     const submitEdits = async () => {
       try {
           // Update in Cognito
-          /*await Auth.updateUserAttributes(Auth.currentAuthenticatedUser(), {
+          /*
+          const user = await getCurrentUser();
+
+          const attributesToUpdate = {
               given_name: editedData.FirstName,
               family_name: editedData.LastName,
-              email: editedData.Email,
               address: editedData.Address,
               phone_number: editedData.PhoneNumber,
-          });
+          };
+
+          console.log(user);
+          console.log(attributesToUpdate);
+
+          await updateUserAttributes(user, attributesToUpdate);
           */
+          
           // Update in DynamoDB
+          delete editedData.UserID;
           await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${userID}`, {
               method: 'PATCH',
               headers: { 'Content-Type': 'application/json' },
@@ -380,6 +386,16 @@ const changeData = (e) => {
                       <label>
                           Address:
                           <input type="text" name="Address" value={editedData.Address || ''} onChange={handleChange} />
+                      </label>
+                      <br/>
+                      <label>
+                          Birthdate:
+                          <input type="text" name="Birthdate" value={editedData.Birthdate || ''} onChange={handleChange} />
+                      </label>
+                      <br/>
+                      <label>
+                          Username:
+                          <input type="text" name="Username" value={editedData.Username || ''} onChange={handleChange} />
                       </label>
                       <br/>
                       <button onClick={submitEdits}>Save Changes</button>
