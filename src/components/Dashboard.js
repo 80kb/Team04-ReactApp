@@ -3,6 +3,8 @@ import '../styles/Dashboard.css';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { signUp } from 'aws-amplify/auth';
+import { jsPDF } from 'jspdf';
+import "jspdf-autotable";
 
 //
 
@@ -12,6 +14,7 @@ const Dashboard = () => {
     const [userID, setUserID] = useState(null);
     const [orders, setOrders] = useState([]);
     const [selectedOption, setSelectedOption] = useState('');//Used For Reports Selection
+    const [pdfUrl, setPdfUrl] = useState("");//Used for Displaying pdf.
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
@@ -184,13 +187,96 @@ const Dashboard = () => {
     );
 };
 
+//npm audit fix, will fix minor errors.
 const ReportMenuChoice = () => {
         const handleOptionChange = (event) => {
             setSelectedOption(event.target.value);
+	    setPdfUrl("");
         };
 
+	const generatePdf = async () => {
+        if (!selectedOption) {
+            alert('Please select a report before generating the PDF.');
+            return;
+        }
+
+	try {
+	   let reportData = null;
+
+	    if (selectedOption === "Sales By Driver"){
+	      const response = await fetch("https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/orders",
+		{
+			method: "GET",
+			header: {
+				"Conent-Type": "application/json",
+                    },
+                }
+	   );
+		if (!response.ok) {
+                throw new Error("Failed to fetch Sales By Driver data");
+            }
+
+            const data = await response.json();
+            console.log(data); // Debugging log
+            reportData = data.Items
+	}//End of Sales By Driver if state.
+         
+	
+	   const doc = new jsPDF();
+	   doc.text(`This is the ${selectedOption} report`, 10, 10);
+
+	   if (Array.isArray(reportData) && reportData.length > 0) {
+		const tableData = reportData.map((item, index) => {
+		let itemsList = "No items available";
+		
+		if (Array.isArray(item.Items)) {
+                    itemsList = item.Items.map((subItem) =>
+                        typeof subItem === "string" ? subItem : JSON.stringify(subItem)
+                    ).join(", ");
+                }
+
+		return[
+                index + 1, // Row number
+                item.OrderID,
+                itemsList,
+                item.Order_Date,
+                item.Order_Status,
+                item.Order_Price,
+		];
+	     });	
+
+		doc.autoTable({
+                head: [["#", "Order ID", "Item", "Order Date", "Status", "Points"]],
+                body: tableData,
+                startY: 20, // Table starts below the title
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [22, 160, 133] }, // Custom header color
+            });
+
+	   } else{
+		doc.text("No data available for this report.", 10, 20);
+	   }
+	   
+
+
+           const blob = doc.output("blob");
+
+	   const pdfBlobUrl = URL.createObjectURL(blob);
+           setPdfUrl(pdfBlobUrl); 
+
+	} catch (error) {
+	    console.error("Error generating PDF:", error);
+            alert("Failed to generate the report. Please try again later.");
+       }
+
+    };
+
+
         return (
-            <div style={{ marginBottom: '20px' }}>
+            <div style={{ marginBottom: '20px',
+			  maxHeight: "500px", // Adjust this based on your container's size
+                          overflow: "auto",
+	    		}}>
                 <label htmlFor="dropdown">Choose a Report: </label>
                 <select
                     id="dropdown"
@@ -204,9 +290,57 @@ const ReportMenuChoice = () => {
                     }}
                 >
                     <option value="">-- Select a Report --</option>
-                    <option value="Report1">Report 1</option>
-                    <option value="Report2">Report 2</option>
+                    <option value="Sales By Driver">Sales By Driver</option>
+                    <option value="Audit Log">Audit Log</option>
                 </select>
+
+		<button
+                onClick={generatePdf}
+                style={{
+                    padding: '8px 12px',
+                    fontSize: '16px',
+                    borderRadius: '4px',
+                    backgroundColor: 'green',
+                    color: 'white',
+                    border: 'none',
+                    cursor: 'pointer',
+		    marginLeft: "10px",
+                }}
+            >
+                Generate PDF
+            </button>
+	
+		{/* Display the PDF below */}
+            {pdfUrl && (
+                <div style={{ marginTop: "20px" }}>
+                    <h3>Preview:</h3>
+                    <iframe
+                        src={pdfUrl}
+                        style={{
+                            width: "100%",
+                            height: "500px",
+                            border: "1px solid #ccc",
+                        }}
+                        title="PDF Preview"
+                    ></iframe>
+                    <div style={{ marginTop: "10px" }}>
+                        <a
+                            href={pdfUrl}
+                            download={`${selectedOption.replace(" ", "_")}_report.pdf`}
+                            style={{
+                                padding: "8px 16px",
+                                backgroundColor: "#007BFF",
+                                color: "#fff",
+                                borderRadius: "4px",
+                                textDecoration: "none",
+                            }}
+                        >
+                            Download PDF
+                        </a>
+                    </div>
+                </div>
+            )}
+
             </div>
         );
     };
