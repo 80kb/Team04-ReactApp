@@ -3,10 +3,14 @@ import '../styles/Dashboard.css';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { signUp } from 'aws-amplify/auth';
+<<<<<<< HEAD
 import { jsPDF } from 'jspdf';
 import "jspdf-autotable";
 
 //
+=======
+import { updateUserAttributes } from '@aws-amplify/auth';
+>>>>>>> main
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState(null);
@@ -14,7 +18,11 @@ const Dashboard = () => {
     const [userID, setUserID] = useState(null);
     const [orders, setOrders] = useState([]);
     const [selectedOption, setSelectedOption] = useState('');//Used For Reports Selection
+<<<<<<< HEAD
     const [pdfUrl, setPdfUrl] = useState("");//Used for Displaying pdf.
+=======
+    const [sponsorOrganizations, setSponsorOrganizations] = useState([]);
+>>>>>>> main
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
@@ -152,8 +160,8 @@ const Dashboard = () => {
    //Responsible for displaying orders
     const renderOrderHistory = () => {
     return (
-	<div>
-	<h2 className="order-history-header">Order History</h2>
+	    <div>
+	    <h2 className="order-history-header">Order History</h2>
         <div className="order-history-container">
             {orders.length > 0 ? (
                 <ul>
@@ -345,8 +353,6 @@ const ReportMenuChoice = () => {
         );
     };
 
-
-
     //Fetch user data on entering the tab
     useEffect(() => {
       if(activeTab === 'accountDetails' || activeTab === 'viewPoints' && userID) {
@@ -394,15 +400,24 @@ const ReportMenuChoice = () => {
     const submitEdits = async () => {
       try {
           // Update in Cognito
-          /*await Auth.updateUserAttributes(Auth.currentAuthenticatedUser(), {
+          /*
+          const user = await getCurrentUser();
+
+          const attributesToUpdate = {
               given_name: editedData.FirstName,
               family_name: editedData.LastName,
-              email: editedData.Email,
               address: editedData.Address,
               phone_number: editedData.PhoneNumber,
-          });
+          };
+
+          console.log(user);
+          console.log(attributesToUpdate);
+
+          await updateUserAttributes(user, attributesToUpdate);
           */
+          
           // Update in DynamoDB
+          delete editedData.UserID;
           await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${userID}`, {
               method: 'PATCH',
               headers: { 'Content-Type': 'application/json' },
@@ -472,7 +487,98 @@ const changeData = (e) => {
         alert('There was an error submitting the application.');
     }
   };
+
+  const handleCreateSponsorOrg = async(event) => {
+      event.preventDefault();
+
+      try{
+
+        const sponsorName = event.target.sponsorName.value;
+        const exchangeRate = parseFloat(event.target.exchangeRate.value);
+        const sponsorOrgID = Date.now();
+
+        const SponsorOrgData = {
+          SponsorOrgID: sponsorOrgID,
+          exchangeRate: exchangeRate,
+          sponsorName: sponsorName
+        };
+
+        const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/sponsorOrgs', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(SponsorOrgData)
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to submit application');
+      }
+
+      alert('Sponsor Organization created successfully!');
+    } catch (error) {
+      alert('There was an error creating Sponsor Organization.');
+    }
+
+  }
+
+  useEffect(() => {
+    if (activeTab === 'ViewSponsorOrgs') {
+        fetchSponsorOrgs();
+    }
+}, [activeTab]);
+
+  const fetchSponsorOrgs = async () => {
+    try {
+      // Make a GET request to the API Gateway endpoint for sponsorOrgs
+      const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/sponsorOrgs', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const result = await response.json();
   
+      if (!response.ok) {
+        throw new Error(`Failed to fetch sponsor organizations: ${response.statusText}`);
+      }
+  
+      setSponsorOrganizations(result.Items);
+
+    } catch (error) {
+      alert('There was an error getting Sponsor Organizations.');
+    }
+  }
+
+  const renderSponsorOrgs = () => {
+    return (
+      <div>
+        <h2>View Sponsor Organizations</h2>
+        {sponsorOrganizations.length > 0 ? (
+          <table border="1">
+            <thead>
+              <tr>
+                <th>SponsorOrgID</th>
+                <th>Sponsor Name</th>
+                <th>Exchange Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sponsorOrganizations.map((org) => (
+                <tr key={org.SponsorOrgID}>
+                  <td>{org.SponsorOrgID}</td>
+                  <td>{org.sponsorName}</td>
+                  <td>{org.exchangeRate}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>No sponsor organizations found.</p>
+        )}
+      </div>
+    );
+};
 
   // Conditionally render content based on activeTab
   const renderContent = () => {
@@ -514,6 +620,16 @@ const changeData = (e) => {
                       <label>
                           Address:
                           <input type="text" name="Address" value={editedData.Address || ''} onChange={handleChange} />
+                      </label>
+                      <br/>
+                      <label>
+                          Birthdate:
+                          <input type="text" name="Birthdate" value={editedData.Birthdate || ''} onChange={handleChange} />
+                      </label>
+                      <br/>
+                      <label>
+                          Username:
+                          <input type="text" name="Username" value={editedData.Username || ''} onChange={handleChange} />
                       </label>
                       <br/>
                       <button onClick={submitEdits}>Save Changes</button>
@@ -678,12 +794,14 @@ const changeData = (e) => {
                 />
               </label>
               <br/>
-              <button type="submit">Create Account</button>
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button type="submit">Create Account</button>
+              </div>
             </form>
           </div>
         );
 
-        case 'CreateAdminAccount':
+      case 'CreateAdminAccount':
         return (
           <div>
             <h2>Create Admin Account</h2>
@@ -776,17 +894,46 @@ const changeData = (e) => {
                 />
               </label>
               <br/>
-              <button type="submit">Create Account</button>
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button type="submit">Create Account</button>
+              </div>
             </form>
           </div>
         );
+
+      case 'CreateSponsorOrg':
+        return (
+          <div>
+            <h2>Create Sponsor Organization</h2>
+            <form onSubmit={handleCreateSponsorOrg} style={{ textAlign: 'center' }}>
+              <label>
+                Sponsor Name:
+                <br />
+                <input type="text" name="sponsorName" required />
+              </label>
+              <br />
+
+              <div style={{ marginTop: '20px' }}>
+                <label>
+                  Exchange Rate:
+                  <br />
+                  <input type="number" step="0.01" name="exchangeRate" required />
+                </label>
+              </div>
+              <br />
+              <button type="submit" style={{ marginTop: '5px' }}>Submit</button>
+            </form>
+          </div>     
+        );
+
+      case 'ViewSponsorOrgs':
+        return renderSponsorOrgs();
 
       default:
         return <h2>Select a Tab to View</h2>;
     }
 
   };
-
 
     return (
         <Authenticator
@@ -812,6 +959,8 @@ const changeData = (e) => {
                     	    ) : userData.UserType === 'Admin' ? (
                     	        <ul>
                               <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
+                              <li onClick={() => setActiveTab('CreateSponsorOrg')} className={activeTab === 'CreateSponsorOrg' ? 'active' : ''}>Create Sponsor Organization</li>
+                              <li onClick={() => setActiveTab('ViewSponsorOrgs')} className={activeTab === 'ViewSponsorOrgs' ? 'active' : ''}>View Sponsor Organizations</li>
                               <li onClick={() => setActiveTab('CreateSponsorAccount')} className={activeTab === 'CreateSponsorAccount' ? 'active' : ''}>Create Sponsor Account</li>
                               <li onClick={() => setActiveTab('CreateAdminAccount')} className={activeTab === 'CreateAdminAccount' ? 'active' : ''}>Create Admin Account</li>
                               <li onClick={() => setActiveTab('reports')} className={activeTab === 'reports' ? 'active' : ''}>Produce Reports</li>
