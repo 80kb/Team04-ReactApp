@@ -16,7 +16,7 @@ const Dashboard = () => {
     const [selectedOption, setSelectedOption] = useState('');//Used For Reports Selection
     const [pdfUrl, setPdfUrl] = useState("");//Used for Displaying pdf.
     const [sponsorOrganizations, setSponsorOrganizations] = useState([]);
-
+    
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
 
@@ -189,8 +189,9 @@ const Dashboard = () => {
 };
 
 
-const fetchSalesByDriverData = async () => {
-              const response = await fetch("https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/orders",
+const fetchReportData = async (selectedOption) => {
+	if(selectedOption === "Sales By Driver"){
+	const response = await fetch("https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/orders",
                 {
                         method: "GET",
                         header: {
@@ -205,11 +206,9 @@ const fetchSalesByDriverData = async () => {
             const data = await response.json();
             console.log(data); // Debugging log
             return data.Items || [];
-
-};
-
-const fetchAuditLogDataDriver = async () => {
- const response = await fetch("https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications",
+	}
+	else if(selectedOption === "Audit Log: Driver Applications"){
+          const response = await fetch("https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications",
                 {
                         method: "GET",
                         header: {
@@ -224,7 +223,10 @@ const fetchAuditLogDataDriver = async () => {
             const data = await response.json();
             console.log(data); // Debugging log
             return data.Items || [];
-
+	}
+	else {
+        throw new Error("Invalid report type selected");
+    }
 };
 
 const formatReportData = (reportData, reportType) => {
@@ -272,100 +274,144 @@ const formatReportData = (reportData, reportType) => {
   return {headers: [], body: [] };
 };
 
-//npm audit fix, will fix minor errors.
 const ReportMenuChoice = () => {
-        const handleOptionChange = (event) => {
-            setSelectedOption(event.target.value);
-	    setPdfUrl("");
-        };
 
-	const generatePdf = async () => {
+    const handleOptionChange = (event) => {
+        setSelectedOption(event.target.value);
+        setPdfUrl("");
+    };
+
+    const generatePdf = async () => {
         if (!selectedOption) {
-            alert('Please select a report before generating the PDF.');
+            alert("Please select a report before generating the PDF.");
             return;
         }
 
-	try {
-	   let reportData = null;
-  	
-	  if (selectedOption === "Sales By Driver") {
-            reportData = await fetchSalesByDriverData();
-        } else if (selectedOption === "Audit Log: Driver Applications") {
-            reportData = await fetchAuditLogDataDriver();
-        }
-	
-	   const doc = new jsPDF();
-	   doc.text(`This is the ${selectedOption} report`, 10, 10);
+        try {
+            let reportData = await fetchReportData(selectedOption); // Use fetchReportData for fetching data
 
-	   if (Array.isArray(reportData) && reportData.length > 0) {
-		const tableData = formatReportData(reportData, selectedOption);	
+            const doc = new jsPDF();
+            doc.text(`This is the ${selectedOption} report`, 10, 10);
 
-		doc.autoTable({
-                head: tableData.headers,
-                body: tableData.body,
-                startY: 20, // Table starts below the title
-                styles: { fontSize: 10 },
-                headStyles: { fillColor: [22, 160, 133] }, // Custom header color
-            });
+            const { headers, body } = formatReportData(reportData, selectedOption);
+            if (body.length > 0) {
+                doc.autoTable({
+                    head: headers,
+                    body: body,
+                    startY: 20,
+                    styles: { fontSize: 10 },
+                    headStyles: { fillColor: [22, 160, 133] },
+                });
+            } else {
+                doc.text("No data available for this report.", 10, 20);
+            }
 
-	   } else{
-		doc.text("No data available for this report.", 10, 20);
-	   }
-	   
-
-
-           const blob = doc.output("blob");
-
-	   const pdfBlobUrl = URL.createObjectURL(blob);
-           setPdfUrl(pdfBlobUrl); 
-
-	} catch (error) {
-	    console.error("Error generating PDF:", error);
+            const blob = doc.output("blob");
+            const pdfBlobUrl = URL.createObjectURL(blob);
+            setPdfUrl(pdfBlobUrl);
+        } catch (error) {
+            console.error("Error generating PDF:", error);
             alert("Failed to generate the report. Please try again later.");
-       }
-
+        }
     };
 
+    const generateCsv = async () => {
+        if (!selectedOption) {
+            alert("Please select a report before generating the CSV.");
+            return;
+        }
 
-        return (
-            <div style={{ marginBottom: '20px',
-			  maxHeight: "500px", // Adjust this based on your container's size
-                          overflow: "auto",
-	    		}}>
-                <label htmlFor="dropdown">Choose a Report: </label>
-                <select
-                    id="dropdown"
-                    value={selectedOption}
-                    onChange={handleOptionChange}
-                    style={{
-                        padding: '8px',
-                        fontSize: '16px',
-                        borderRadius: '4px',
-                        border: '1px solid #ccc',
-                    }}
-                >
-                    <option value="">-- Select a Report --</option>
-                    <option value="Sales By Driver">Sales By Driver</option>
-                    <option value="Audit Log: Driver Applications">Audit Log: Driver Applications</option>
-                </select>
+        try {
+            let reportData = await fetchReportData(selectedOption); // Use fetchReportData for fetching data
 
-		<button
-                onClick={generatePdf}
+            const { headers, body } = formatReportData(reportData, selectedOption);
+            if (body.length === 0) {
+                alert("No data available for this report.");
+                return;
+            }
+
+            // Combine headers and body into CSV format
+            const csvContent = [
+                headers[0].join(","), // Convert headers to CSV string
+                ...body.map((row) => row.join(",")), // Convert each body row to CSV string
+            ].join("\n");
+
+            // Create Blob and URL for the CSV file
+            const csvBlob = new Blob([csvContent], { type: "text/csv" });
+            const csvUrl = URL.createObjectURL(csvBlob);
+
+            // Trigger download
+            const link = document.createElement("a");
+            link.href = csvUrl;
+            link.download = `${selectedOption.replace(" ", "_")}_report.csv`;
+            link.click();
+
+            URL.revokeObjectURL(csvUrl); // Clean up URL
+        } catch (error) {
+            console.error("Error generating CSV:", error);
+            alert("Failed to generate the CSV. Please try again later.");
+        }
+    };
+
+    return (
+        <div
+            style={{
+                marginBottom: "20px",
+                maxHeight: "500px",
+                overflow: "auto",
+            }}
+        >
+            <label htmlFor="dropdown">Choose a Report: </label>
+            <select
+                id="dropdown"
+                value={selectedOption}
+                onChange={handleOptionChange}
                 style={{
-                    padding: '8px 12px',
-                    fontSize: '16px',
-                    borderRadius: '4px',
-                    backgroundColor: 'green',
-                    color: 'white',
-                    border: 'none',
-                    cursor: 'pointer',
-		    marginLeft: "10px",
+                    padding: "8px",
+                    fontSize: "16px",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
                 }}
             >
-                Generate PDF
+                <option value="">-- Select a Report --</option>
+                <option value="Sales By Driver">Sales By Driver</option>
+                <option value="Audit Log: Driver Applications">
+                    Audit Log: Driver Applications
+                </option>
+            </select>
+
+            <button
+                onClick={generatePdf}
+                style={{
+                    padding: "8px 12px",
+                    fontSize: "16px",
+                    borderRadius: "4px",
+                    backgroundColor: "green",
+                    color: "white",
+                    border: "none",
+                    cursor: "pointer",
+                    marginLeft: "10px",
+                }}
+            >
+                Generate Report
             </button>
-	
-		{/* Display the PDF below */}
+
+            <button
+                onClick={generateCsv}
+                style={{
+                    padding: "8px 12px",
+                    fontSize: "16px",
+                    borderRadius: "4px",
+                    backgroundColor: "blue",
+                    color: "white",
+                    border: "none",
+                    cursor: "pointer",
+                    marginLeft: "10px",
+                }}
+            >
+                Download CSV
+            </button>
+
             {pdfUrl && (
                 <div style={{ marginTop: "20px" }}>
                     <h3>Preview:</h3>
@@ -395,10 +441,10 @@ const ReportMenuChoice = () => {
                     </div>
                 </div>
             )}
+        </div>
+    );
+};
 
-            </div>
-        );
-    };
 
     //Fetch user data on entering the tab
     useEffect(() => {
