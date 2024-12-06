@@ -188,6 +188,53 @@ const Dashboard = () => {
     );
 };
 
+
+const fetchSalesByDriverData = async () => {
+              const response = await fetch("https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/orders",
+                {
+                        method: "GET",
+                        header: {
+                                "Conent-Type": "application/json",
+                    },
+                }
+           );
+                if (!response.ok) {
+                throw new Error("Failed to fetch Sales By Driver data");
+            }
+
+            const data = await response.json();
+            console.log(data); // Debugging log
+            return data.Items || [];
+
+};
+
+const fetchAuditLogData = async () => {
+//Temp.
+};
+
+const formatReportData = (reportData, reportType) => {
+  if (reportType === "Sales By Driver") {
+        return {
+            headers: [["#", "Order ID", "Items", "Order Date", "Status", "Price"]],
+            body: reportData.map((item, index) => {
+                let itemsList = "No items available";
+                if (Array.isArray(item.Items)) {
+                    itemsList = item.Items.join(", ");
+                }
+
+                return [
+                    index + 1,
+                    item.OrderID,
+                    itemsList,
+                    item.Order_Date,
+                    item.Order_Status,
+                    item.Order_Price,
+                ];
+            }),
+        };
+    }
+};
+
 //npm audit fix, will fix minor errors.
 const ReportMenuChoice = () => {
         const handleOptionChange = (event) => {
@@ -203,52 +250,22 @@ const ReportMenuChoice = () => {
 
 	try {
 	   let reportData = null;
-
-	    if (selectedOption === "Sales By Driver"){
-	      const response = await fetch("https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/orders",
-		{
-			method: "GET",
-			header: {
-				"Conent-Type": "application/json",
-                    },
-                }
-	   );
-		if (!response.ok) {
-                throw new Error("Failed to fetch Sales By Driver data");
-            }
-
-            const data = await response.json();
-            console.log(data); // Debugging log
-            reportData = data.Items
-	}//End of Sales By Driver if state.
-         
+  	
+	  if (selectedOption === "Sales By Driver") {
+            reportData = await fetchSalesByDriverData();
+        } else if (selectedOption === "Audit Log: Driver Applications") {
+            reportData = await fetchAuditLogData();
+        }
 	
 	   const doc = new jsPDF();
 	   doc.text(`This is the ${selectedOption} report`, 10, 10);
 
 	   if (Array.isArray(reportData) && reportData.length > 0) {
-		const tableData = reportData.map((item, index) => {
-		let itemsList = "No items available";
-		
-		if (Array.isArray(item.Items)) {
-                    itemsList = item.Items.map((subItem) =>
-                        typeof subItem === "string" ? subItem : JSON.stringify(subItem)
-                    ).join(", ");
-                }
-
-		return[
-                index + 1, // Row number
-                item.OrderID,
-                itemsList,
-                item.Order_Date,
-                item.Order_Status,
-                item.Order_Price,
-		];
-	     });	
+		const tableData = formatReportData(reportData, selectedOption);	
 
 		doc.autoTable({
-                head: [["#", "Order ID", "Item", "Order Date", "Status", "Points"]],
-                body: tableData,
+                head: tableData.headers,
+                body: tableData.body,
                 startY: 20, // Table starts below the title
                 styles: { fontSize: 10 },
                 headStyles: { fillColor: [22, 160, 133] }, // Custom header color
@@ -292,7 +309,7 @@ const ReportMenuChoice = () => {
                 >
                     <option value="">-- Select a Report --</option>
                     <option value="Sales By Driver">Sales By Driver</option>
-                    <option value="Audit Log">Audit Log</option>
+                    <option value="Audit Log: Driver Applications">Audit Log: Driver Applications</option>
                 </select>
 
 		<button
