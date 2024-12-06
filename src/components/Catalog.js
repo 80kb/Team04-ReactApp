@@ -93,8 +93,9 @@ class Catalog extends Component {
         };
 	const updatedCart = [...cart, item];
         this.setState({ cart: [...cart, item] });
-
-
+	
+	alert("Item Successfully Added To Cart");
+	
 	// Save the updated cart to localStorage, if you change tabs and come back to cart items will still exist.
         localStorage.setItem('cart', JSON.stringify(updatedCart));
     };
