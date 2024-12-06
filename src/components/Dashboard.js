@@ -208,8 +208,23 @@ const fetchSalesByDriverData = async () => {
 
 };
 
-const fetchAuditLogData = async () => {
-//Temp.
+const fetchAuditLogDataDriver = async () => {
+ const response = await fetch("https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications",
+                {
+                        method: "GET",
+                        header: {
+                                "Conent-Type": "application/json",
+                    },
+                }
+           );
+                if (!response.ok) {
+                throw new Error("Failed to fetch Sales By Driver data");
+            }
+
+            const data = await response.json();
+            console.log(data); // Debugging log
+            return data.Items || [];
+
 };
 
 const formatReportData = (reportData, reportType) => {
@@ -233,6 +248,28 @@ const formatReportData = (reportData, reportType) => {
             }),
         };
     }
+
+   if (reportType === "Audit Log: Driver Applications"){
+	return {
+            headers: [["Driver Name", "Sponsor Organization", "Application Date", "Status"]],
+            body: reportData.map((item, index) => {
+                const applicationID = item.ApplicationID || "N/A";
+                const driverName = item.driverName || item.DriverName || "Unknown Driver";
+                const sponsorOrg = item.sponsorOrg || item.SponsorOrg || "Unknown Sponsor";
+                const applicationDate = item.applicationDate || item.ApplicationDate || "Unknown Date";
+                const applicationStatus = item.applicationStatus || item.ApplicationStatus || "Unknown Status";
+
+                return [
+                    driverName,
+                    sponsorOrg,
+                    applicationDate,
+                    applicationStatus,
+                ];
+            }),
+        };
+   }
+
+  return {headers: [], body: [] };
 };
 
 //npm audit fix, will fix minor errors.
@@ -254,7 +291,7 @@ const ReportMenuChoice = () => {
 	  if (selectedOption === "Sales By Driver") {
             reportData = await fetchSalesByDriverData();
         } else if (selectedOption === "Audit Log: Driver Applications") {
-            reportData = await fetchAuditLogData();
+            reportData = await fetchAuditLogDataDriver();
         }
 	
 	   const doc = new jsPDF();
