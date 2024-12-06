@@ -1028,6 +1028,9 @@ const changeData = (e) => {
       case 'ViewSponsorOrgs':
         return renderSponsorOrgs();
 
+      case 'ViewPendingApplications':
+        return <h2>Pending Applications</h2>
+
       default:
         return <h2>Select a Tab to View</h2>;
     }
@@ -1053,6 +1056,7 @@ const changeData = (e) => {
                     	        <ul>
                     	        <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
                         	    <li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
+                              <li onClick={() => setActiveTab('ViewPendingApplications')} className={activeTab === 'ViewPendingApplications' ? 'active' : ''}>View Pending Applications</li>
                               <li onClick={() => setActiveTab('CreateSponsorAccount')} className={activeTab === 'CreateSponsorAccount' ? 'active' : ''}>Create Sponsor Account</li>
                     		</ul>
                     	    ) : userData.UserType === 'Admin' ? (
