@@ -16,7 +16,8 @@ const Dashboard = () => {
     const [selectedOption, setSelectedOption] = useState('');//Used For Reports Selection
     const [pdfUrl, setPdfUrl] = useState("");//Used for Displaying pdf.
     const [sponsorOrganizations, setSponsorOrganizations] = useState([]);
-    
+    const [isReportGenerated, setIsReportGenerated] = useState(false);
+
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
 
@@ -279,6 +280,7 @@ const ReportMenuChoice = () => {
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
         setPdfUrl("");
+	setIsReportGenerated(false);
     };
 
     const generatePdf = async () => {
@@ -309,6 +311,7 @@ const ReportMenuChoice = () => {
             const blob = doc.output("blob");
             const pdfBlobUrl = URL.createObjectURL(blob);
             setPdfUrl(pdfBlobUrl);
+	    setIsReportGenerated(true);
         } catch (error) {
             console.error("Error generating PDF:", error);
             alert("Failed to generate the report. Please try again later.");
@@ -396,22 +399,6 @@ const ReportMenuChoice = () => {
                 Generate Report
             </button>
 
-            <button
-                onClick={generateCsv}
-                style={{
-                    padding: "8px 12px",
-                    fontSize: "16px",
-                    borderRadius: "4px",
-                    backgroundColor: "blue",
-                    color: "white",
-                    border: "none",
-                    cursor: "pointer",
-                    marginLeft: "10px",
-                }}
-            >
-                Download CSV
-            </button>
-
             {pdfUrl && (
                 <div style={{ marginTop: "20px" }}>
                     <h3>Preview:</h3>
@@ -438,6 +425,25 @@ const ReportMenuChoice = () => {
                         >
                             Download PDF
                         </a>
+		
+		    {isReportGenerated && (
+              	<button
+                	onClick={generateCsv}
+                	style={{
+                    	 padding: "8px 12px",
+                    	 fontSize: "16px",
+                    	 borderRadius: "4px",
+                    	 backgroundColor: "blue",
+                    	 color: "white",
+                    	 border: "none",
+                    	 cursor: "pointer",
+                    	 marginLeft: "10px",
+                	}}
+            	       >
+                       Download CSV
+                 </button>
+                  )}
+
                     </div>
                 </div>
             )}
