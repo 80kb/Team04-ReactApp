@@ -18,8 +18,7 @@ const Dashboard = () => {
     const [sponsorOrganizations, setSponsorOrganizations] = useState([]);
     const [isReportGenerated, setIsReportGenerated] = useState(false);//This is for CSV Button
     const [filteredApplications, setFilteredApplications] = React.useState(null); // Null means data not yet loaded
-
-
+    const [UsersinSponsorOrg, setUsersinSponsorOrg] = useState([]);
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
@@ -641,7 +640,7 @@ const changeData = (e) => {
     if (activeTab === 'ViewSponsorOrgs') {
         fetchSponsorOrgs();
     }
-}, [activeTab]);
+  }, [activeTab]);
 
   const fetchSponsorOrgs = async () => {
     try {
@@ -792,6 +791,130 @@ const changeData = (e) => {
       alert('Could not reject application');
     }
   };
+
+  useEffect(() => {
+    if (activeTab === 'ViewDriversinSponsorOrg') {
+      fetchUsersinSponsorOrg(userID);
+    }
+  }, [activeTab]);
+
+  const fetchUsersinSponsorOrg = async (userID) => {
+    try {
+
+      const response1 = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${userID}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const result1 = await response1.json();
+      const SponsorOrgforCurrentSponsor = result1.Item.SponsorOrg;
+
+      // Make a GET request to the API Gateway endpoint for sponsorOrgs
+      const response2 = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const result2 = await response2.json();
+      const SponsorOrgUsers = result2.Items;
+      const FilteredSponsorOrgUsers = SponsorOrgUsers.filter(Users => Users.UserType === 'Driver' && Users.SponsorOrg === SponsorOrgforCurrentSponsor);
+
+      setUsersinSponsorOrg(FilteredSponsorOrgUsers);
+
+    } catch (error) {
+      alert('There was an error getting Users in Sponsor Organization.');
+      setUsersinSponsorOrg([]);
+    }
+  }
+
+  const renderUsersinSponsorOrg = () => {
+    return (
+      <div>
+        <h2>View Sponsor Organizations</h2>
+        {UsersinSponsorOrg.length > 0 ? (
+          <table border="1">
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Address</th>
+                <th>Points</th>
+                <th>Alter Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {UsersinSponsorOrg.map((usr) => (
+                <tr key={usr.Username}>
+                  <td>{usr.FirstName}</td>
+                  <td>{usr.LastName}</td>
+                  <td>{usr.Email}</td>
+                  <td>{usr.Username}</td>
+                  <td>{usr.Address}</td>
+                  <td>{usr.Points}</td>
+                  <td>
+                      <button onClick={() => AlterUserPoints(usr.UserID)}>
+                          Add/Remove Points
+                      </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>No users found in Sponsor Organization.</p>
+        )}
+      </div>
+    );
+  };
+
+  const AlterUserPoints = async(UserIDtoAlterPoints) => {
+
+    const pointsToAdd = parseInt(prompt('Enter the number of points to add to the driver (Negative to remove points):'), 10);
+
+    // Validate the input
+    if (isNaN(pointsToAdd)) {
+        alert('Invalid input. Please enter a valid number.');
+        return; // Exit the function if the input is invalid
+    }
+
+    try {
+      const response = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${UserIDtoAlterPoints}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const result = await response.json();
+      const CurrentDriverPoints = result.Item.Points;
+      var UpdatedDriverPoints = '';
+      if(CurrentDriverPoints !== 'N/A'){
+        UpdatedDriverPoints = CurrentDriverPoints + pointsToAdd;
+      } else {
+        UpdatedDriverPoints = pointsToAdd;
+      }
+
+      await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${UserIDtoAlterPoints}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          Points: UpdatedDriverPoints
+        })
+      });
+
+      alert("Points updated successfully!");
+      renderUsersinSponsorOrg();
+
+    } catch (error) {
+      alert('There was an error altering the users points.');
+    }
+
+  }
 
   // Conditionally render content based on activeTab
   const renderContent = () => {
@@ -1204,6 +1327,9 @@ const changeData = (e) => {
     </div>
     );
 
+      case 'ViewDriversinSponsorOrg':
+        return renderUsersinSponsorOrg();
+
       default:
         return <h2>Select a Tab to View</h2>;
     }
@@ -1230,6 +1356,7 @@ const changeData = (e) => {
                     	        <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
                         	    <li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
                               <li onClick={() => setActiveTab('ViewPendingApplications')} className={activeTab === 'ViewPendingApplications' ? 'active' : ''}>View Pending Applications</li>
+                              <li onClick={() => setActiveTab('ViewDriversinSponsorOrg')} className={activeTab === 'ViewDriversinSponsorOrg' ? 'active' : ''}>View All Drivers in Sponsor</li>
                               <li onClick={() => setActiveTab('CreateSponsorAccount')} className={activeTab === 'CreateSponsorAccount' ? 'active' : ''}>Create Sponsor Account</li>
                     		</ul>
                     	    ) : userData.UserType === 'Admin' ? (
