@@ -669,18 +669,17 @@ const changeData = (e) => {
         }
 
         const result = await response.json();
-	const applications = result.Items;
-	const sponsorOrg = userData?.SponsorOrg; // Accessing SponsorOrg from userData
+	      const applications = result.Items;
+	      const sponsorOrg = userData?.SponsorOrg; // Accessing SponsorOrg from userData
 
 	 if (!sponsorOrg) {
             console.log('User SponsorOrg is not available');
             setFilteredApplications([]);
           return;
-         } else{
+    } else{
 	
-	    const filteredApplications = applications.filter(application => application.SponsorOrg === sponsorOrg);
-    	    console.log('Filtered Applications:', filteredApplications);
-    	    setFilteredApplications(filteredApplications);
+	    const filteredApplications = applications.filter(application => application.SponsorOrg === sponsorOrg && application.ApplicationStatus === "Processing");
+    	setFilteredApplications(filteredApplications);
 	  }
 	} catch (error) {
            console.error('Error fetching applications:', error);
@@ -748,7 +747,39 @@ const changeData = (e) => {
         )}
       </div>
     );
-};
+  };
+
+  const handleApproveApp = async(appID) => {
+
+    try {
+      await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications/${appID}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ApplicationStatus: 'Approved'
+        }),
+    });
+    alert('Application has been approved!');
+    } catch (error) {
+      alert('Could not approve application');
+    }
+  };
+
+  const handleRejectApp = async(appID) => {
+
+    try {
+      await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications/${appID}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ApplicationStatus: 'Rejected'
+        }),
+    });
+    alert('Application has been rejected!');
+    } catch (error) {
+      alert('Could not reject application');
+    }
+  };
 
   // Conditionally render content based on activeTab
   const renderContent = () => {
@@ -1143,6 +1174,10 @@ const changeData = (e) => {
                     <p><strong>Driver Name:</strong> {application.DriverName}</p>
                     <p><strong>Application Status:</strong> {application.ApplicationStatus}</p>
                     <p><strong>Application Date:</strong> {application.ApplicationDate}</p>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <button type="button" onClick={() => handleApproveApp(application.ApplicationID)}>Approve</button>
+                      <button type="button" onClick={() => handleRejectApp(application.ApplicationID)} style={{ marginLeft: '15px' }}>Reject</button>
+                    </div>
                   </div>
                 ))}
               </div>
