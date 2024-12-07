@@ -814,16 +814,16 @@ const changeData = (e) => {
 
 	//This will send the alert to the Database.
       await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/alerts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        AlertID: 0,
-        Alert_Type: 'Application',
-        Alert_Message: 'Your application has been Denied. Reach out for More details.',
-        Seen: false,
-        UserID: appUserID,
-      }),
-    });
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          AlertID: 0,
+          Alert_Type: 'Application',
+          Alert_Message: 'Your application has been Denied.',
+          Seen: false,
+          UserID: appUserID,
+        }),
+      });
 
     alert('Application has been rejected! Sent alert to user.');
     renderSponsorApplications();
@@ -922,6 +922,19 @@ const changeData = (e) => {
         return; // Exit the function if the input is invalid
     }
 
+    var pointsMessage = '';
+    while (!pointsMessage.trim()) {
+        pointsMessage = prompt('Enter a reason message for the points change:');
+
+        // If the user cancels or enters an empty string
+        if (pointsMessage === null) {
+            alert('Reasoning message is required to proceed.');
+            return; // Exit the function if no message is provided
+        }
+
+        pointsMessage = pointsMessage.trim(); // Remove unnecessary whitespace
+    }
+
     try {
       const response = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${UserIDtoAlterPoints}`, {
         method: 'GET',
@@ -945,6 +958,16 @@ const changeData = (e) => {
         body: JSON.stringify({
           Points: UpdatedDriverPoints
         })
+      });
+
+      await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/alerts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          Alert_Type: 'Points Change',
+          Alert_Message: `Reason for points change: ${pointsMessage} | Points Added: ${pointsToAdd}`,
+          UserID: UserIDtoAlterPoints,
+        }),
       });
 
       alert("Points updated successfully!");
