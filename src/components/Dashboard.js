@@ -758,8 +758,29 @@ const changeData = (e) => {
         body: JSON.stringify({
           ApplicationStatus: 'Approved'
         }),
+      });
+
+      const response = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications/${appID}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
     });
-    alert('Application has been approved!');
+
+      const result = await response.json();
+      const appUserID = result.Item.UserID;
+      const appSponsorOrg = result.Item.SponsorOrg;
+
+      await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${appUserID}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          SponsorOrg: appSponsorOrg
+        }),
+      });
+      
+      alert('Application has been approved!');
+      renderSponsorApplications();
     } catch (error) {
       alert('Could not approve application');
     }
@@ -776,6 +797,7 @@ const changeData = (e) => {
         }),
     });
     alert('Application has been rejected!');
+    renderSponsorApplications();
     } catch (error) {
       alert('Could not reject application');
     }
