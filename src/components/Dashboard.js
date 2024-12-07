@@ -833,7 +833,7 @@ const changeData = (e) => {
   const renderUsersinSponsorOrg = () => {
     return (
       <div>
-        <h2>Users in Sponsor Organization</h2>
+        <h2>Users in Sponsor Organization ({userData.SponsorOrg})</h2>
         {UsersinSponsorOrg.length > 0 ? (
           <table border="1">
             <thead>
@@ -908,7 +908,7 @@ const changeData = (e) => {
       });
 
       alert("Points updated successfully!");
-      renderUsersinSponsorOrg();
+      fetchUsersinSponsorOrg(userID);
 
     } catch (error) {
       alert('There was an error altering the users points.');
