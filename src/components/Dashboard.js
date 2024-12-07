@@ -833,7 +833,7 @@ const changeData = (e) => {
   const renderUsersinSponsorOrg = () => {
     return (
       <div>
-        <h2>View Sponsor Organizations</h2>
+        <h2>Users in Sponsor Organization</h2>
         {UsersinSponsorOrg.length > 0 ? (
           <table border="1">
             <thead>
