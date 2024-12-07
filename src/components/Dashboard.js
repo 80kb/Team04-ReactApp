@@ -16,7 +16,10 @@ const Dashboard = () => {
     const [selectedOption, setSelectedOption] = useState('');//Used For Reports Selection
     const [pdfUrl, setPdfUrl] = useState("");//Used for Displaying pdf.
     const [sponsorOrganizations, setSponsorOrganizations] = useState([]);
-    const [isReportGenerated, setIsReportGenerated] = useState(false);
+    const [isReportGenerated, setIsReportGenerated] = useState(false);//This is for CSV Button
+    const [filteredApplications, setFilteredApplications] = React.useState(null); // Null means data not yet loaded
+
+
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
@@ -649,6 +652,74 @@ const changeData = (e) => {
     }
   }
 
+
+
+  const renderSponsorApplications = async () => {
+		
+    try {
+        const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to submit application');
+        }
+
+        const result = await response.json();
+	const applications = result.Items;
+	const sponsorOrg = userData?.SponsorOrg; // Accessing SponsorOrg from userData
+
+	 if (!sponsorOrg) {
+            console.log('User SponsorOrg is not available');
+            setFilteredApplications([]);
+          return;
+         } else{
+	
+	    const filteredApplications = applications.filter(application => application.SponsorOrg === sponsorOrg);
+    	    console.log('Filtered Applications:', filteredApplications);
+    	    setFilteredApplications(filteredApplications);
+	  }
+	} catch (error) {
+           console.error('Error fetching applications:', error);
+           setFilteredApplications([]); // Treat errors as no data
+       }
+
+  };
+
+    // Render the filtered applications
+ React.useEffect(() => {
+    if (activeTab === 'ViewPendingApplications' && userData) {
+      renderSponsorApplications();
+    }
+  }, [activeTab, userData]);
+
+  /*return (
+    <div>
+      <h2>View Pending Applications</h2>
+      {activeTab === 'ViewPendingApplications' ? (
+        filteredApplications ? (
+          filteredApplications.length > 0 ? (
+            <ul>
+              {filteredApplications.map((application, index) => (
+                <li key={index}>
+                  {application.ApplicationID}: {application.DriverName} - {application.ApplicationStatus}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No applications found for your Sponsor Organization.</p>
+          )
+        ) : (
+          <p>Loading applications...</p>
+        )
+      ) : null}
+    </div>
+  );*/
+
+
   const renderSponsorOrgs = () => {
     return (
       <div>
@@ -763,7 +834,7 @@ const changeData = (e) => {
         return (
           <div>
             <h2>Application Details</h2>
-	          <p>Below, Enter Your Name and Sponsor Orgaziation to Register for
+	          <p>Below, Enter Your Name (First and Last, ex. James Gold) and Sponsor Orgaziation to Register for
 		        a Good Drivers Rewards Account with that Sponsor.</p>
             <form>
               <div>
@@ -1029,7 +1100,62 @@ const changeData = (e) => {
         return renderSponsorOrgs();
 
       case 'ViewPendingApplications':
-        return <h2>Pending Applications</h2>
+
+      return(	
+       <div style={{ padding: '1rem' }}>
+      <h2>View Pending Applications</h2>
+      {activeTab === 'ViewPendingApplications' ? (
+        filteredApplications ? (
+          filteredApplications.length > 0 ? (
+            <div>
+              {/* Display the SponsorOrg in a unique style */}
+              <p
+                style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold',
+                  color: '#2c3e50',
+                  textAlign: 'center',
+                  /*textDecoration: 'underline',*/
+                  marginBottom: '1rem',
+                }}
+              >
+                Sponsor Organization: {userData?.SponsorOrg}
+              </p>
+
+              {/* Scrollable list of applications */}
+              <div
+                style={{
+                  maxHeight: '450px', // Limits the height
+                  overflowY: 'auto', // Enables vertical scrolling
+                  border: '1px solid #ddd',
+                  padding: '1rem',
+                  borderRadius: '8px',
+                }}
+              >
+                {filteredApplications.map((application, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      borderBottom: '1px solid #ccc',
+                      padding: '0.5rem 0',
+                    }}
+                  >
+                    <p><strong>Driver Name:</strong> {application.DriverName}</p>
+                    <p><strong>Application Status:</strong> {application.ApplicationStatus}</p>
+                    <p><strong>Application Date:</strong> {application.ApplicationDate}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p>No applications found for your Sponsor Organization.</p>
+          )
+        ) : (
+          <p>Loading applications...</p>
+        )
+      ) : null}
+    </div>
+    );
 
       default:
         return <h2>Select a Tab to View</h2>;
