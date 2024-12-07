@@ -543,7 +543,17 @@ const ReportMenuChoice = () => {
   	driverName: '',
   	sponsorOrg: '',
   	applicationDate: new Date().toLocaleDateString(),
+	userId: null,
      });
+
+    useEffect(() => {
+    if (userData?.UserID) {
+        setApplicationData(prevData => ({
+            ...prevData,
+            userId: userData.UserID, // Update userID dynamically
+        }));
+    }
+    }, [userData]);
 
 
 const changeData = (e) => {
@@ -564,8 +574,11 @@ const changeData = (e) => {
     const uniqueID = generateUniqueID();
     const applicationDataWithID = {
         ...applicationData,
-        applicationID: uniqueID
+        applicationID: uniqueID,
+	userId: userData.UserID,
     };
+
+    console.log('Payload being sent:', applicationDataWithID);
 
     try {
         const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications', {
@@ -694,29 +707,6 @@ const changeData = (e) => {
       renderSponsorApplications();
     }
   }, [activeTab, userData]);
-
-  /*return (
-    <div>
-      <h2>View Pending Applications</h2>
-      {activeTab === 'ViewPendingApplications' ? (
-        filteredApplications ? (
-          filteredApplications.length > 0 ? (
-            <ul>
-              {filteredApplications.map((application, index) => (
-                <li key={index}>
-                  {application.ApplicationID}: {application.DriverName} - {application.ApplicationStatus}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No applications found for your Sponsor Organization.</p>
-          )
-        ) : (
-          <p>Loading applications...</p>
-        )
-      ) : null}
-    </div>
-  );*/
 
 
   const renderSponsorOrgs = () => {
