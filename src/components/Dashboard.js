@@ -577,7 +577,7 @@ const changeData = (e) => {
 	userId: userData.UserID,
     };
 
-    console.log('Payload being sent:', applicationDataWithID);
+    //console.log('Payload being sent:', applicationDataWithID);
 
     try {
         const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications', {
@@ -593,7 +593,7 @@ const changeData = (e) => {
         }
 
         const result = await response.json();
-        console.log('Application submitted successfully:', result);  // Message from Lambda response
+        //console.log('Application submitted successfully:', result);  // Message from Lambda response
         alert('Application submitted successfully!');
 
     } catch (error) {
@@ -767,8 +767,23 @@ const changeData = (e) => {
           SponsorOrg: appSponsorOrg
         }),
       });
+
+
+      //This will send the alert to the Database.    
+      await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/alerts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+	AlertID: 0,
+        Alert_Type: 'Application',
+        Alert_Message: 'Your application has been approved!',
+        Seen: false,
+        UserID: appUserID,
+      }),
+    });
       
-      alert('Application has been approved!');
+
+      alert('Application has been approved, and the user has been notified!');
       renderSponsorApplications();
     } catch (error) {
       alert('Could not approve application');
@@ -785,7 +800,32 @@ const changeData = (e) => {
           ApplicationStatus: 'Rejected'
         }),
     });
-    alert('Application has been rejected!');
+
+
+      const response = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/applications/${appID}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+
+	    const result = await response.json();
+	    const appUserID = result.Item.UserID
+
+	//This will send the alert to the Database.
+      await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/alerts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        AlertID: 0,
+        Alert_Type: 'Application',
+        Alert_Message: 'Your application has been Denied. Reach out for More details.',
+        Seen: false,
+        UserID: appUserID,
+      }),
+    });
+
+    alert('Application has been rejected! Sent alert to user.');
     renderSponsorApplications();
     } catch (error) {
       alert('Could not reject application');
@@ -915,6 +955,9 @@ const changeData = (e) => {
     }
 
   }
+
+
+  //Notifying User of Application (Accept of Deny)
 
   // Conditionally render content based on activeTab
   const renderContent = () => {
