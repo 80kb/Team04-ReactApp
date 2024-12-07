@@ -12,10 +12,12 @@ import '../styles/Main.css';
 import {useState, useEffect} from 'react'
 import { getCurrentUser } from 'aws-amplify/auth';
 
+
 //This is the Home Page on Our WebApp. Its being done in the Main file since its easier to coordinate.
 const Home = () => {
 
     const [userData, setUserData] = useState(null);
+    var currentUserID = null;
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -36,19 +38,60 @@ const Home = () => {
                 });
             
                 if (!response.ok) {
-                  throw new Error(`Failed to fetch sponsor organizations: ${response.statusText}`);
+                  throw new Error(`Failed to fetch User Details: ${response.statusText}`);
                 }
 
                 const result = await response.json();
                 setUserData(result.Item);
+                currentUserID = result.Item.UserID;
           
               } catch (error) {
-                alert('There was an error getting Sponsor Organizations.');
+                alert('There was an error getting User Details.');
               }    
         };
     
         fetchUserDetails();
+        fetchAlerts();
       }, []);
+
+      const fetchAlerts = async () => {
+        try {
+            const response = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/alerts`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch Alerts: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            const AlertItems = result.Items;
+            const filteredAlerts = AlertItems.filter(Alerts => Alerts.Seen === false && Alerts.UserID === currentUserID);
+
+            for(let i = 0; i < filteredAlerts.length; i++) {
+                alert(`Title: ${filteredAlerts[i].Alert_Type}\n\n${filteredAlerts[i].Alert_Message}`);
+                try {
+                    await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/alerts/${filteredAlerts[i].AlertID}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            Seen: true
+                          })
+                    });
+                } catch (error) {
+                    alert('There was an error changing alert to "Seen".');
+                }
+            }
+
+            } catch (error) {
+                alert('There was an error getting Alerts.');
+            }
+    }
 
     return(
         <div className='home'>
