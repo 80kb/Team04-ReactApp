@@ -1208,6 +1208,73 @@ const changeData = (e) => {
                               <p><strong>Address:</strong> {userData.Address}</p>
                               <p><strong>Birthdate:</strong> {userData.Birthdate}</p>
                               <p><strong>Username:</strong> {userData.Username}</p>
+                              <p><strong>Sponsor Org:</strong> {userData.SponsorOrg}</p>
+                              <p><strong>Created At:</strong> {new Date(userData.CreatedAt).toLocaleString()}</p>
+                              <button onClick={handleEdit}>Edit</button>
+                          </div>
+                      ) : (
+                          <p>Loading user details...</p>
+                      )}
+                  </div>
+              )}
+          </div>
+      );
+      case 'accountDetailsAdmin':
+        return (
+          <div>
+              <h2>Account Details</h2>
+              {isEditing ? (
+                  <div>
+                      <label>
+                          First Name:
+                          <input type="text" name="FirstName" value={editedData.FirstName || ''} onChange={handleChange} />
+                      </label>
+                      <br/>
+                      <label>
+                          Last Name:
+                          <input type="text" name="LastName" value={editedData.LastName || ''} onChange={handleChange} />
+                      </label>
+                      <br/>
+                      <label>
+                          Phone Number:
+                          <input type="tel" name="PhoneNumber" value={editedData.PhoneNumber || ''} onChange={handleChange} />
+                      </label>
+                      <br/>
+                      <label>
+                          Address:
+                          <input type="text" name="Address" value={editedData.Address || ''} onChange={handleChange} />
+                      </label>
+                      <br/>
+                      <label>
+                          Birthdate:
+                          <input type="text" name="Birthdate" value={editedData.Birthdate || ''} onChange={handleChange} />
+                      </label>
+                      <br/>
+                      <label>
+                          Username:
+                          <input type="text" name="Username" value={editedData.Username || ''} onChange={handleChange} />
+                      </label>
+                      <br/>
+                      <label>
+                          Sponsor Org:
+                          <input type="text" name="SponsorOrg" value={editedData.SponsorOrg || ''} onChange={handleChange} />
+                      </label>
+                      <br/>
+                      <button onClick={submitEdits}>Save Changes</button>
+                      <button onClick={() => setIsEditing(false)}>Cancel</button>
+                  </div>
+              ) : (
+                  <div>
+                      {userData ? (
+                          <div>
+                              <p><strong>First Name:</strong> {userData.FirstName}</p>
+                              <p><strong>Last Name:</strong> {userData.LastName}</p>
+                              <p><strong>Email:</strong> {userData.Email}</p>
+                              <p><strong>Phone Number:</strong> {userData.PhoneNumber}</p>
+                              <p><strong>Address:</strong> {userData.Address}</p>
+                              <p><strong>Birthdate:</strong> {userData.Birthdate}</p>
+                              <p><strong>Username:</strong> {userData.Username}</p>
+                              <p><strong>Sponsor Org:</strong> {userData.SponsorOrg}</p>
                               <p><strong>Created At:</strong> {new Date(userData.CreatedAt).toLocaleString()}</p>
                               <button onClick={handleEdit}>Edit</button>
                           </div>
@@ -1591,7 +1658,7 @@ const changeData = (e) => {
                     		</ul>
                     	    ) : userData.UserType === 'Admin' ? (
                     	        <ul>
-                              <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
+                              <li onClick={() => setActiveTab('accountDetailsAdmin')} className={activeTab === 'accountDetailsAdmin' ? 'active' : ''}>Account Details</li>
                               <li onClick={() => setActiveTab('CreateSponsorOrg')} className={activeTab === 'CreateSponsorOrg' ? 'active' : ''}>Create Sponsor Organization</li>
                               <li onClick={() => setActiveTab('ViewSponsorOrgs')} className={activeTab === 'ViewSponsorOrgs' ? 'active' : ''}>View Sponsor Organizations</li>
                               <li onClick={() => setActiveTab('CreateSponsorAccount')} className={activeTab === 'CreateSponsorAccount' ? 'active' : ''}>Create Sponsor Account</li>
