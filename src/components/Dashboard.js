@@ -19,6 +19,7 @@ const Dashboard = () => {
     const [isReportGenerated, setIsReportGenerated] = useState(false);//This is for CSV Button
     const [filteredApplications, setFilteredApplications] = React.useState(null); // Null means data not yet loaded
     const [UsersinSponsorOrg, setUsersinSponsorOrg] = useState([]);
+    const [SponsorOrgExchangeRate, setSponsorOrgExchangeRate] = useState([]);
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
@@ -1049,6 +1050,97 @@ const changeData = (e) => {
 
   }
 
+  useEffect(() => {
+    if (activeTab === 'ExchangeRate') {
+        fetchSponsorOrgExchangeRate();
+    }
+  }, [activeTab]);
+
+  const fetchSponsorOrgExchangeRate = async () => {
+    try {
+      // Make a GET request to the API Gateway endpoint for sponsorOrgs
+      const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/sponsorOrgs', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const result = await response.json();
+      const Orgs = result.Items;
+      const filteredOrg = Orgs.filter(org => org.sponsorName === userData.SponsorOrg);
+  
+      if (!response.ok) {
+        throw new Error(`Failed to fetch sponsor organizations: ${response.statusText}`);
+      }
+  
+      setSponsorOrgExchangeRate(filteredOrg[0].exchangeRate);
+
+    } catch (error) {
+      alert('There was an error getting Sponsor Organizations.');
+    }
+  }
+
+  const renderSponsorOrgExchangeRate = () => {
+    return (
+      <div>
+        {userData?.SponsorOrg && SponsorOrgExchangeRate ? (
+          <div>
+            <h3>Sponsor Organization: {userData.SponsorOrg}</h3>
+            <p>Exchange Rate: {SponsorOrgExchangeRate} Points = $1</p>
+          </div>
+        ) : (
+          <p>Loading Sponsor Organization details...</p>
+        )}
+        <button onClick={alterExchangeRate}>Edit Exchange Rate</button>
+      </div>
+    );
+  }
+
+  const alterExchangeRate = async() => {
+    const newExchangeRate = parseInt(prompt('Enter the new exchange rate:'), 10);
+
+    // Validate the input
+    if (isNaN(newExchangeRate)) {
+        alert('Invalid input. Please enter a valid number.');
+        return; // Exit the function if the input is invalid
+    }
+
+    try {
+      // Make a GET request to the API Gateway endpoint for sponsorOrgs
+      const response = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/sponsorOrgs', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const result = await response.json();
+      const Orgs = result.Items;
+      const filteredOrg = Orgs.filter(org => org.sponsorName === userData.SponsorOrg);
+  
+      if (!response.ok) {
+        throw new Error(`Failed to fetch sponsor organizations: ${response.statusText}`);
+      }
+
+      await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/sponsorOrgs/${filteredOrg[0].SponsorOrgID}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          exchangeRate: newExchangeRate
+        })
+      });
+
+      alert("Exchange Rate updated successfully!");
+
+    } catch (error) {
+      alert('There was an error getting Sponsor Organizations.');
+    }
+
+    fetchSponsorOrgExchangeRate();
+
+  }
+
 
   // Conditionally render content based on activeTab
   const renderContent = () => {
@@ -1126,10 +1218,10 @@ const changeData = (e) => {
               )}
           </div>
       );
-      case 'rewards':
-        return <h2>Rewards: [Placeholder for Rewards]</h2>;
+      case 'ExchangeRate':
+        return renderSponsorOrgExchangeRate();
       case 'reports':
-	return ReportMenuChoice();
+	      return ReportMenuChoice();
       case 'application':
         return (
           <div>
@@ -1491,7 +1583,7 @@ const changeData = (e) => {
                     	    ) : userData.UserType === 'Sponsor' ? (
                     	        <ul>
                     	        <li onClick={() => setActiveTab('accountDetails')} className={activeTab === 'accountDetails' ? 'active' : ''}>Account Details</li>
-                        	    <li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
+                        	    <li onClick={() => setActiveTab('ExchangeRate')} className={activeTab === 'ExchangeRate' ? 'active' : ''}>ExchangeRate</li>
                               <li onClick={() => setActiveTab('ViewPendingApplications')} className={activeTab === 'ViewPendingApplications' ? 'active' : ''}>View Pending Applications</li>
                               <li onClick={() => setActiveTab('ViewDriversinSponsorOrg')} className={activeTab === 'ViewDriversinSponsorOrg' ? 'active' : ''}>View All Drivers in Sponsor</li>
                               <li onClick={() => setActiveTab('Leaderboard')} className={activeTab === 'Leaderboard' ? 'active' : ''}>View Leaderboard</li>
