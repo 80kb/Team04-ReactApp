@@ -12,13 +12,14 @@ import '../styles/Main.css';
 import {useState, useEffect} from 'react'
 import { getCurrentUser } from 'aws-amplify/auth';
 
-var currentUserID = null;
+var currentUserSponsorOrg = null;
 
 
 //This is the Home Page on Our WebApp. Its being done in the Main file since its easier to coordinate.
 const Home = () => {
 
     const [userData, setUserData] = useState(null);
+    var currentUserID = null;
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -45,6 +46,7 @@ const Home = () => {
                 const result = await response.json();
                 setUserData(result.Item);
                 currentUserID = result.Item.UserID;
+                currentUserSponsorOrg = result.Item.SponsorOrg;
           
               } catch (error) {
                 alert('There was an error getting User Details.');
@@ -131,38 +133,12 @@ const NoAccess = () => (
 
 //These are our paths for the Webapp, on the site when you click one of the tabs, this will help you Access the correct info. for the page.
 const Main = () => {
-     const [userData, setUserData] = useState(null);
 
-    useEffect(() => {
-        const fetchUserDetails = async () => {
-            try {
-                const user = await getCurrentUser();
-                const userID = user.username;
-
-                const response = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${userID}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch User Details: ${response.statusText}`);
-                }
-
-                const result = await response.json();
-                setUserData(result.Item);
-            } catch (error) {
-                console.error('Error fetching user details:', error);
-            }
-        };
-
-        fetchUserDetails();
-    }, []);
-
+    //fetchAlerts();
+     
   //userData.UserType === 'Driver'
   //If a user doesn't have sponsorOrg., locks asscess to accessing the catalog.
-  const userCanAccessCatalog = userData && userData.SponsorOrg;
+  const userCanAccessCatalog = currentUserSponsorOrg;
    
  return (
     <div className="main-container"> 
