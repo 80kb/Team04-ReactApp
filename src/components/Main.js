@@ -12,8 +12,6 @@ import '../styles/Main.css';
 import {useState, useEffect} from 'react'
 import { getCurrentUser } from 'aws-amplify/auth';
 
-var currentUserSponsorOrg = null;
-
 
 //This is the Home Page on Our WebApp. Its being done in the Main file since its easier to coordinate.
 const Home = () => {
@@ -46,7 +44,6 @@ const Home = () => {
                 const result = await response.json();
                 setUserData(result.Item);
                 currentUserID = result.Item.UserID;
-                currentUserSponsorOrg = result.Item.SponsorOrg;
           
               } catch (error) {
                 alert('There was an error getting User Details.');
@@ -123,29 +120,15 @@ const Home = () => {
     );
 };
 
-// Create a "No Access" component
-const NoAccess = () => (
-    <div className="no-access">
-        <h2>Access Denied</h2>
-        <p>You do not have permission to view this page. For Drivers, please Submit an Application and wait to be Approved to access the Catalog!</p>
-    </div>
-);
-
 //These are our paths for the Webapp, on the site when you click one of the tabs, this will help you Access the correct info. for the page.
 const Main = () => {
-
-    //fetchAlerts();
-     
-  //userData.UserType === 'Driver'
-  //If a user doesn't have sponsorOrg., locks asscess to accessing the catalog.
-  const userCanAccessCatalog = currentUserSponsorOrg;
    
  return (
     <div className="main-container"> 
         <Routes>
             <Route exact path='/' element={<Home />} />
             <Route exact path='/about' element={<About />} />
-            <Route exact path='/catalog' element={userCanAccessCatalog ? <Catalog /> : <NoAccess />} />
+            <Route exact path='/catalog' element={<Catalog />} />
             <Route exact path='/dashboard' element={<Dashboard />} />
             <Route exact path='/reports' element={<Reports />} />
             <Route exact path='/order' element={<Order />} />

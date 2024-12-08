@@ -3,8 +3,10 @@ import $ from 'jquery';
 import { Authenticator } from '@aws-amplify/ui-react';
 import Cart from './Cart';
 import '../styles/Catalog.css';
+import { getCurrentUser } from 'aws-amplify/auth';
 
 class Catalog extends Component {
+
     constructor(props) {
         super(props);
 
@@ -15,40 +17,45 @@ class Catalog extends Component {
             searchQuery: '',
             exchangeRate: 1,
             cart: [],
-            showCart: false // New state to track cart visibility
+            showCart: false, // New state to track cart visibility
+            sponsorOrg: ''
         };
     }
 
-    componentDidMount() {
-	const savedCart = localStorage.getItem('cart');
+    async componentDidMount() {
 
-	if (savedCart) {
-        this.setState({ cart: JSON.parse(savedCart) });
-        }
+        const user = await getCurrentUser();
+        const currentUser = user.username;
 
+        const savedCart = localStorage.getItem('cart');
 
-
-        $.ajax({
-            url: 'https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/sponsorOrgs', 
-            type: 'GET',
-            dataType: 'json',
-            success: (data) => {
-                this.setState({ exchangeRate: data['Items']['0']['exchangeRate'] });
-            },
-            error: (xhr, stat, err) => {
-                console.error('Error: ', err);
+        if (savedCart) {
+            this.setState({ cart: JSON.parse(savedCart) });
             }
-        });
-    }
 
-    handleChange = (event) => {
-        this.setState({ searchQuery: event.target.value });
-    };
+            const response = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${currentUser}`);
+            const result = await response.json();
+            const currentUserSponsorOrg = result.Item.SponsorOrg;
 
-    handleKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            this.handleSubmit(event);
+            if(currentUserSponsorOrg !== ''){
+                const response2 = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/sponsorOrgs');
+                const result2 = await response2.json();
+                const Orgs = result2.Items;
+                const filteredOrg = Orgs.filter(Org => Org.sponsorName === currentUserSponsorOrg);
+
+                this.setState({exchangeRate: filteredOrg[0].exchangeRate});
+                this.setState({sponsorOrg: currentUserSponsorOrg});
+            }
         }
+
+        handleChange = (event) => {
+            this.setState({ searchQuery: event.target.value });
+        };
+
+        handleKeyPress = (event) => {
+            if (event.key === 'Enter') {
+                this.handleSubmit(event);
+            }
     };
 
     handleSubmit = () => {
@@ -91,71 +98,81 @@ class Catalog extends Component {
             image: productimage[index],
             price: productprice[index]
         };
-	const updatedCart = [...cart, item];
-        this.setState({ cart: [...cart, item] });
-	
-	alert("Item Successfully Added To Cart");
-	
-	// Save the updated cart to localStorage, if you change tabs and come back to cart items will still exist.
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-    };
+        const updatedCart = [...cart, item];
+            this.setState({ cart: [...cart, item] });
+        
+        alert("Item Successfully Added To Cart");
+        
+        // Save the updated cart to localStorage, if you change tabs and come back to cart items will still exist.
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+        };
 
-    // Toggle the showCart state
-    toggleCart = () => {
-        this.setState((prevState) => ({ showCart: !prevState.showCart }));
-    };
+        // Toggle the showCart state
+        toggleCart = () => {
+            this.setState((prevState) => ({ showCart: !prevState.showCart }));
+        };
 
-    //Remove Items From Cart, (***think about doing selct certain items and clear***).
-    clearCart = () => {
-    this.setState({ cart: [] });
-    localStorage.removeItem('cart'); // Clear from localStorage
+        //Remove Items From Cart, (***think about doing selct certain items and clear***).
+        clearCart = () => {
+        this.setState({ cart: [] });
+        localStorage.removeItem('cart'); // Clear from localStorage
     };
 
     render() {
-        const { productname, productimage, productprice, cart, showCart } = this.state;
+        const { productname, productimage, productprice, cart, showCart, sponsorOrg } = this.state;
 
-        return (
-            <Authenticator formFields={formFields}>
-                <div className='catalog'>
-                    <h1>Driver Reward Catalog</h1>
-                    <p>Call your sponsor for more details at 1800-123-5555</p>
 
-                    <input
-                        type="text"
-                        onChange={this.handleChange}
-                        onKeyDown={this.handleKeyPress}
-                    />
-                    <button type="button" onClick={this.handleSubmit}>Search</button>
+        if(sponsorOrg !== ''){
+            return (
+                <Authenticator formFields={formFields}>
+                    <div className='catalog'>
+                        <h1>Driver Reward Catalog</h1>
+                        <p>Call your sponsor for more details at 1800-123-5555</p>
 
-                    {/* Cart button to toggle the cart display */}
-                    <button type="button" onClick={this.toggleCart} className={`cart-icon ${showCart ? 'open' : ''}`}>
-			🛒{this.state.cart.length}
-		    </button>
+                        <input
+                            type="text"
+                            onChange={this.handleChange}
+                            onKeyDown={this.handleKeyPress}
+                        />
+                        <button type="button" onClick={this.handleSubmit}>Search</button>
 
-                    {/* Conditionally render the Cart component */}
-		    {/*{showCart && <Cart items={cart} />*/}
+                        {/* Cart button to toggle the cart display */}
+                        <button type="button" onClick={this.toggleCart} className={`cart-icon ${showCart ? 'open' : ''}`}>
+                🛒{this.state.cart.length}
+                </button>
 
-		     {this.state.showCart && (
-    			<Cart items={this.state.cart} clearCart={this.clearCart} />
-		     )}
+                        {/* Conditionally render the Cart component */}
+                {/*{showCart && <Cart items={cart} />*/}
 
-                    <h2>Items</h2>
-                    <div className="catalogGrid">
-                        {productname.map((item, index) => (
-                            <div
-                                className="catalogEntry clickable"
-                                key={index}
-                                onClick={() => this.addToCart(index)}
-                            >
-                                <img src={productimage[index]} alt={item} />
-                                <p>{item}</p>
-                                <p>{productprice[index]} points</p>
-                            </div>
-                        ))}
+                {this.state.showCart && (
+                    <Cart items={this.state.cart} clearCart={this.clearCart} />
+                )}
+
+                        <h2>Items</h2>
+                        <div className="catalogGrid">
+                            {productname.map((item, index) => (
+                                <div
+                                    className="catalogEntry clickable"
+                                    key={index}
+                                    onClick={() => this.addToCart(index)}
+                                >
+                                    <img src={productimage[index]} alt={item} />
+                                    <p>{item}</p>
+                                    <p>{productprice[index]} points</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
+                </Authenticator>
+            );
+        } else {
+            return (
+                <div className="no-access">
+                    <h2>Access Denied</h2>
+                    <p>You do not have permission to view this page. For Drivers, please Submit an Application and wait to be Approved to access the Catalog!</p>
                 </div>
-            </Authenticator>
-        );
+            )
+        }
     }
 }
 
