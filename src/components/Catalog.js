@@ -71,7 +71,7 @@ class Catalog extends Component {
                         searchResult[i]['sellingStatus']['0']['currentPrice']['0']['__value__'] * this.state.exchangeRate
                     );
                 }
-
+		console.log(searchResult);
                 this.setState({
                     productname: nameArr,
                     productimage: imgArr,
