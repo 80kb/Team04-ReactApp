@@ -868,7 +868,7 @@ const changeData = (e) => {
       alert('There was an error getting Users in Sponsor Organization.');
       setUsersinSponsorOrg([]);
     }
-  }
+  };
 
   const renderUsersinSponsorOrg = () => {
     return (
@@ -911,6 +911,76 @@ const changeData = (e) => {
       </div>
     );
   };
+
+  useEffect(() => {
+    if (activeTab === 'Leaderboard' && userID) {
+      fetchLeaderboardData(userID);  // Fetch leaderboard data only when the tab is active
+    }
+  }, [activeTab, userID]);  // Trigger the effect when activeTab or userID changes
+  
+  const fetchLeaderboardData = async (userID) => {
+    try {
+      // Fetch the sponsor's organization information
+      const response1 = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${userID}`);
+      const result1 = await response1.json();
+      const SponsorOrgforCurrentSponsor = result1.Item.SponsorOrg;
+  
+      // Fetch all users
+      const response2 = await fetch('https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users');
+      const result2 = await response2.json();
+      const SponsorOrgUsers = result2.Items;
+  
+      // Filter the users to only include drivers in the sponsor's organization
+      const FilteredSponsorOrgUsers = SponsorOrgUsers.filter(Users =>
+        Users.UserType === 'Driver' && Users.SponsorOrg === SponsorOrgforCurrentSponsor
+      );
+  
+      // Sort the filtered users by Points in descending order
+      const sortedDrivers = FilteredSponsorOrgUsers.sort((a, b) => (b.Points || 0) - (a.Points || 0));
+  
+      // Set the sorted drivers to the state
+      setUsersinSponsorOrg(sortedDrivers);
+    } catch (error) {
+      alert('There was an error getting Users in Sponsor Organization.');
+      setUsersinSponsorOrg([]);  // Clear the state on error
+    }
+  };
+
+  const renderLeaderboard = () => {
+    return (
+      <div>
+        <h2>Leaderboard for {userData?.SponsorOrg}</h2>
+        {UsersinSponsorOrg.length > 0 ? (
+          <table border="1">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {UsersinSponsorOrg.map((usr, index) => (
+                <tr key={usr.Username}>
+                  <td>{index + 1}</td> {/* Rank column */}
+                  <td>{usr.FirstName}</td>
+                  <td>{usr.LastName}</td>
+                  <td>{usr.Username}</td>
+                  <td>{usr.Points}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>No drivers found in Sponsor Organization.</p>
+        )}
+      </div>
+    );
+  };
+  
+
 
   const AlterUserPoints = async(UserIDtoAlterPoints) => {
 
@@ -1396,6 +1466,9 @@ const changeData = (e) => {
 
       default:
         return <h2>Select a Tab to View</h2>;
+
+      case 'Leaderboard':
+        return renderLeaderboard();  // This renders the leaderboard
     }
 
   };
@@ -1421,6 +1494,7 @@ const changeData = (e) => {
                         	    <li onClick={() => setActiveTab('rewards')} className={activeTab === 'rewards' ? 'active' : ''}>Rewards</li>
                               <li onClick={() => setActiveTab('ViewPendingApplications')} className={activeTab === 'ViewPendingApplications' ? 'active' : ''}>View Pending Applications</li>
                               <li onClick={() => setActiveTab('ViewDriversinSponsorOrg')} className={activeTab === 'ViewDriversinSponsorOrg' ? 'active' : ''}>View All Drivers in Sponsor</li>
+                              <li onClick={() => setActiveTab('Leaderboard')} className={activeTab === 'Leaderboard' ? 'active' : ''}>View Leaderboard</li>
                               <li onClick={() => setActiveTab('CreateSponsorAccount')} className={activeTab === 'CreateSponsorAccount' ? 'active' : ''}>Create Sponsor Account</li>
                     		</ul>
                     	    ) : userData.UserType === 'Admin' ? (
