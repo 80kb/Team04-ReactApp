@@ -120,20 +120,63 @@ const Home = () => {
     );
 };
 
+// Create a "No Access" component
+const NoAccess = () => (
+    <div className="no-access">
+        <h2>Access Denied</h2>
+        <p>You do not have permission to view this page. For Drivers, please Submit an Application and wait to be Approved to access the Catalog!</p>
+    </div>
+);
+
 //These are our paths for the Webapp, on the site when you click one of the tabs, this will help you Access the correct info. for the page.
-const Main = () => (
+const Main = () => {
+     const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            try {
+                const user = await getCurrentUser();
+                const userID = user.username;
+
+                const response = await fetch(`https://th3uour1u1.execute-api.us-east-2.amazonaws.com/devStage006/users/${userID}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch User Details: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                setUserData(result.Item);
+            } catch (error) {
+                console.error('Error fetching user details:', error);
+            }
+        };
+
+        fetchUserDetails();
+    }, []);
+
+  //userData.UserType === 'Driver'
+  //If a user doesn't have sponsorOrg., locks asscess to accessing the catalog.
+  const userCanAccessCatalog = userData && userData.SponsorOrg;
+   
+ return (
     <div className="main-container"> 
         <Routes>
             <Route exact path='/' element={<Home />} />
             <Route exact path='/about' element={<About />} />
-            <Route exact path='/catalog' element={<Catalog />} />
+            <Route exact path='/catalog' element={userCanAccessCatalog ? <Catalog /> : <NoAccess />} />
             <Route exact path='/dashboard' element={<Dashboard />} />
             <Route exact path='/reports' element={<Reports />} />
             <Route exact path='/order' element={<Order />} />
 	    
-			<Route exact path='/login-signup' element={<LoginSignup/>}></Route>
+	    <Route exact path='/login-signup' element={<LoginSignup/>}></Route>
         </Routes>
     </div>
-);
+   );
+};
 //Used to export the Main function from the file, returns all routes and files related in Main. 
 export default Main;

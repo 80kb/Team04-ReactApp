@@ -980,8 +980,6 @@ const changeData = (e) => {
   }
 
 
-  //Notifying User of Application (Accept of Deny)
-
   // Conditionally render content based on activeTab
   const renderContent = () => {
     switch (activeTab) {
