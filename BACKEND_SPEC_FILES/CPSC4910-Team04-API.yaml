@@ -1,0 +1,960 @@
+# CPSC-4910-Team04-API
+#
+#
+# Description: This API includes the header API information, the Server information,
+#              the paths, the components such as parameters, responses, and schema's. 
+#
+# Purpose: This API allows various website users to access the Driver Incentive Program
+#          and login and search/adjust various settings.
+#
+
+# ---------General API Information---------
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Team04-API'
+  description: REST API for Driver Incentive Program
+
+# ---------API Server Information---------
+servers:
+  - url: https://team04gooddrivingincentive.cpsc4911.com/
+
+# ---------API Paths Information---------
+paths:
+  /aboutPage:
+    get:
+      description: Returns the About Page database contents
+      responses:
+        '200':
+          description: Retrieved About Page contents successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/aboutPage'
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+  # Users can be drivers, sponsors, or admins; personal information is also stored
+  /users:
+
+    # Get all user accounts
+    get:
+      description: Returns a list of user accounts #and filter by specific parameters such as PageLimit, PageOffset, ActivityStatus...
+      #parameters:
+        #- $ref: '#/components/parameters/PageLimit'
+        #- $ref: '#/components/parameters/PageOffset'
+        #- $ref: '#/components/parameters/ActivityStatus'
+
+      # Responses to getting the list of all users
+      responses:
+        '200':
+          description: Retrieved the list of all user accounts successfully
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/users'
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encountered an unexpected error
+          $ref: '#/components/responses/500Error'
+
+    # Creates a user account with user entered properties; assigns user with an id
+    post:
+      description: Allows you to add a new account or accounts to the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/users'
+              required: 
+                - userID
+                - nameLast
+                - nameFirst
+                - userType
+                - dateJoin
+                - email
+                - username
+                - password
+
+      # Responses to creating a particular users
+      responses:
+        '200':
+          description: Successfully added a new user account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '500':
+          $ref: '#/components/responses/500Error'
+    
+    options:
+      responses:
+        '200':
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+
+  /users/{userID}:
+    parameters:
+      - name: userID
+        description: The unique identifier of a user
+        in: path
+        required: true
+        schema:
+          type: string
+    
+    get:
+      description: Retrieve specific user by ID
+      responses:
+        '200':
+          description: Sucessfully returned user corresponding with userID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/users"
+        
+        '400':
+          $ref: "#/components/responses/400Error"
+        '500':
+          $ref: "#/components/responses/500Error"
+    
+    patch:
+      description: Update the user profile
+      responses:
+        '200':
+          description: Successfully updated user
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        
+        '400':
+          $ref: "#/components/responses/400Error"
+        '500':
+          $ref: "#/components/responses/500Error"
+
+    options:
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+
+  # Login path for every user account to login into the website - FUNCTION TAKEN OVER BY AWS COGNITO
+  ##/users/login:
+
+  /alerts:
+    get: 
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    post: 
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    options:
+      responses:
+        '200':
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+  
+  /alerts/{alertID}:
+    parameters:
+      - name: alertID
+        description: The unique identifier of an alert
+        in: path
+        required: true
+        schema:
+          type: string
+    
+    get:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    patch:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    options:
+      responses:
+        '200':
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+  
+  # Path for people to submit driver applications
+  /applications:
+    get:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+
+    post:
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    options:
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+      
+  
+  # Path for reviewing specific driver applications
+  /applications/{applicationID}:
+    parameters:
+      - name: applicationID
+        description: The unique identifier of an application
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    delete:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    patch:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+
+    options:
+      responses:
+        '200':
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+  
+  # Path for creating or getting orders
+  /orders:
+    get:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    options:
+      responses:
+        '200':
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    post:
+      responses:
+        '200':
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+  
+  /orders/{orderID}:
+    parameters:
+      - name: orderID
+        description: The unique identifier of an order
+        in: path
+        required: true
+        schema:
+          type: string
+    
+    get:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    delete:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    patch:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+
+  /orders/users/{userID}:
+    parameters:
+      - name: userID
+        description: The unique identifier of a user
+        in: path
+        required: true
+        schema:
+          type: string
+    
+    get:
+      description: Retrieve specific user by ID
+      responses:
+        '200':
+          description: Sucessfully returned user corresponding with userID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/users"
+        
+        '400':
+          $ref: "#/components/responses/400Error"
+        '500':
+          $ref: "#/components/responses/500Error"
+      
+    options:
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+  
+  /reports:
+    get:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+
+    post:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+  
+  /reports/{reportID}:
+    parameters:
+      - name: reportID
+        description: The unique identifier of a user
+        in: path
+        required: true
+        schema:
+          type: string
+    
+    get:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    patch:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+  
+  /sponsorOrgs:
+    get:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    post:
+      responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    options:
+      responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+
+  /sponsorOrds/{sponsorID}:
+    parameters:
+      - name: sponsorOrgID
+        in: path
+        required: true
+        schema:
+          type: string
+    
+    options:
+    responses:
+        '200':
+          description: 200 response
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+    
+    patch:
+    responses:
+        '200':
+          description: 200 response
+          content: {}
+        '400':
+          description: Did not reach the server successfully
+          $ref: '#/components/responses/400Error'
+        '500':
+          description: Server encounterd an unexpected error
+          $ref: '#/components/responses/500Error'
+
+# ---------API Components Information---------
+# Contains all reusable parameters, responses, and schemas for the Accounts API
+components:
+
+  # ---------Parameters---------
+  parameters:
+
+    # Helps set the limit of user accounts on a single page
+    PageLimit:
+      name: limit
+      in: query
+      description: Limits the number of items on a page
+      schema:
+        type: integer
+
+    # Helps to select which page of user accounts to be displayed
+    PageOffset:
+      name: offset
+      in: query
+      description: Specifies the page number of the user accounts to be displayed
+      schema:
+        type: integer
+    
+    ActivityStatus:
+      name: isActive
+      in: query
+      description: Limits displayed accounts to only those that are either active or inactive
+      schema:
+        type: boolean
+
+
+  # ---------API Responses Information---------
+  responses:
+
+    # A schema for general 400 error code information
+    400Error:
+      description: Invalid Client Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                description: Client error
+                type: string
+
+    # A schema for general 500 error code information
+    500Error:
+      description: Unexpected Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                description: Server error
+                type: string
+
+    # # A schema for general success messages
+    # 200Message:
+    #     description: Success 
+    #     content:
+    #         application/json:
+    #             schema:
+    #                 type: object
+    #                 properties:
+    #                   message:
+    #                     description: A human readable success message 
+    #                     type: string 
+
+  # ---------API Schemas Information---------
+  schemas:
+
+    users:
+      description: User supertype, common attributes among all accounts
+      type: object
+      properties:
+        userID:
+          type: integer
+        nameLast:
+          type: string
+        nameFirst:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+        dateJoin:
+          type: string
+        picture:
+          type: string
+        phoneNumber:
+          type: integer
+        isActive:
+          type: boolean
+        userType:
+          type: string
+          enum:
+            - admins
+            - sponsors
+            - drivers
+
+    admins:
+      description: admin-user subtype attributes
+      type: object
+      properties:
+        userID:
+          type: integer
+
+    sponsors:
+      description: sponsor-user subtype
+      type: object
+      properties:
+        userID:
+          type: integer
+        sponsorOrg:
+          type: string
+    
+    sponsorOrg:
+      description: The sponsor organization that has drivers and sponsor-users
+      type: object
+      properties:
+        sponsorOrgID:
+          type: integer
+        sponsorName:
+          type: string
+        exchangeRate:
+          type: integer
+        listOfDrivers:
+          type: array
+          items:
+            $ref: "#/components/schemas/drivers"
+        listOfApplications:
+          type: array
+          items:
+            $ref: "#/componenets/schemas/applications"
+
+    drivers:
+      description: driver-user subtype
+      type: object
+      properties:
+        userID:
+          type: integer
+        sponsorOrg:
+          type: string
+        points:
+          type: integer
+
+    aboutPage:
+      description: The About Page contents
+      type: object
+      properties:
+        TeamNumber:
+          type: integer
+        SprintNumber:
+          type: integer
+        ReleaseDate:
+          type: string
+        ProductName:
+          type: string
+        ProductDescription:
+          type: string
+
+    orders:
+      description: The orders the drivers make
+      type: object
+      properties:
+        orderID:
+          type: integer
+        userID:
+          description: the ID of the driver who made the order
+          type: integer
+        orderStatus:
+          type: string
+        orderDate:
+          type: string
+          format: date-time
+        orderItems:
+          type: array
+          items:
+            type: object
+        orderPointPrice:
+          type: integer
+    
+    applications:
+      description: Sign-up applications to be a driver
+      type: object
+      properties:
+        applicationID:
+          type: integer
+        sponsorOrg:
+          description: the ID of the sponsor organization being applied to
+          type: integer
+        driverName:
+          type: string
+        applicationDate:
+          type: string
+          format: date-time
+        applicationStatus:
+          type: string
+    
+    alerts:
+      description: The alerts sent to drivers about changes in order, application, or account
+      type: object
+      properties:
+        alertID:
+          type: integer
+        alertType:
+          type: string
+        alertMessage:
+          type: string
+        isEnabled:
+          type: boolean
+    
+    reports:
+      description: Audit log report information
+      type: object
+      properties:
+        auditID:
+          type: integer
+
+
+  # ---------API SecuritySchemes Information---------
+  #securitySchemes:
+  #  ApiKey:
+  #    type: apiKey
+  #    in: header
+  #    name: X-Api-Key
+
+# ---------API Security Information---------
+#security:
+#  - ApiKey: []
